@@ -16,7 +16,6 @@ def convert_to_float(value):
         return None
 
 def main():
-    # Initial data
     property1 = {
         "id": "17", "object_id": "1743", "field_id": "19", "field_relation_id": "172", "type": "text",
         "UID": "K0I2QDQJ1JW3A7748M84383282L8045V1",
@@ -28,7 +27,6 @@ def main():
         "option": "{\"se\":\"44013\",\"UID\":\"0\",\"va\":\"A1012A\",\"re\":\"1\",\"et\":\"11/22/2023 12:13:33 PM\",\"ut\":\"11/22/2023 12:13:33 PM\",\"op\":\"0\"}"
     }
 
-    # Extract data from JSON string
     option1 = parse_property_data(property1)
     option2 = parse_property_data(property2)
 
