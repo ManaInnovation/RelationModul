@@ -27,7 +27,6 @@ def convert_to_dict(json_data):
         print("error!")
         return None
     
-
 def post_request(url, headers, data):
     try:
         response = requests.post(url, headers=headers, json=data)
@@ -36,7 +35,6 @@ def post_request(url, headers, data):
     except requests.exceptions.RequestException as e:
         print(f"Error during POST request: {e}")
         return None
-
 
 def get_request(url, headers):
     try:
@@ -72,6 +70,7 @@ class V2Relation:
         NewEntityRelationObject= EntityRelation(uid,source,distination, direction, UpdateTime,EventTime,Active,Passive)
         self.EntityRelationList.append(NewEntityRelationObject)
         #return json.dumps(NewEntityRelationObject.to_dict(), indent=4) 
+        # need to go to save def
         return FunctionReturn(True, "successfully created new Entity Relation.", NewEntityRelationObject)
 
     def UpdateRelation(self, last_relation, current_relation):
@@ -83,6 +82,7 @@ class V2Relation:
                 if value is not None:
                     setattr(last_relation, attr, value)
             #return json.dumps(last_relation.to_dict(), indent=4)
+            # need to go to save def
             return FunctionReturn(True, "successfully update Entity Relation", last_relation)
         else:
             return FunctionReturn(False, "UIDs don't match")
