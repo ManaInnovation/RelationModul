@@ -15,9 +15,7 @@ class V2RelationBehave():
         self.Save(new_relation)
         return new_relation
 
-    def Update(self,CurentRelation):
-          def active(none, passive):
-               if self. curentdirection==com.ProcesStatus.none:
+    def Update(self,CurentRelation,lastRelation):
                     match self.direction: 
                          case com.ProcesStatus.inactive:
                               if CurentRelation. direction == com.ProcesStatus.inactive:
@@ -214,14 +212,6 @@ class V2RelationStatus():
           def CreateTimeFrame():
                pass
         
-
-
-class V2RelationStatusV2(V2RelationStatus):
-     def __init__(self,uid) -> None:
-          self.uid = uid
-          self.ibehave = V2RelationBehave()
-          self.CurentRelation = self.ibehave.Get(self.uid)
-          super().__init__(self.CurentRelation['source'], self.CurentRelation['destination'])
 
 iV2RelationStatus = V2RelationStatus('A','B')
 MyTestRelarion = iV2RelationStatus.CurentRelation
