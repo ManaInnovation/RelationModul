@@ -200,6 +200,14 @@ class V2RelationStatus():
           # common_start = max(start1, start2)
           # common_end = min(end1, end2)
           # return common_start, common_end
+
+     def find_common_range2(data1, data2):
+          pass
+          # start1, end1 = find_range(data1)
+          # start2, end2 = find_range(data2)
+          # common_start = max(start1, start2)
+          # common_end = min(end1, end2)
+          # return common_start, common_end
         
      def FindBlankRange(self,index):
         CheckTrigger = False
