@@ -179,7 +179,28 @@ class V2RelationStatus():
                for j in range (et_seconds2, ut_seconds2):
                 self.combined_data[j][1]=value2
                #self.combined_data[ut_seconds2][1]=value2
-               
+
+     def interpolate_missing_values(combined_data, index):
+               last_value = None
+               last_value_index = None
+
+               for i in range(86400):
+                    if combined_data[i][index] is not None:
+                         if last_value is not None:
+                              step = (combined_data[i][index] - last_value) / (i - last_value_index)
+                              for j in range(last_value_index + 1, i):
+                                   combined_data[j][index] = round(last_value + step * (j - last_value_index), 4)
+                         last_value = combined_data[i][index]
+                         last_value_index = i
+
+     def find_common_range(data1, data2):
+          pass
+          # start1, end1 = find_range(data1)
+          # start2, end2 = find_range(data2)
+          # common_start = max(start1, start2)
+          # common_end = min(end1, end2)
+          # return common_start, common_end
+        
      def FindBlankRange(self,index):
         CheckTrigger = False
         narojelo=False
