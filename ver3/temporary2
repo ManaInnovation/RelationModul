@@ -1,0 +1,59 @@
+def FindBlankRange(self,index):
+        CheckTrigger = False
+        narojelo=False
+        last_full=None
+        first_full = None
+        first_blank = None
+        last_blank = None
+        finalDataBlock=86400
+        data_length = len(self.combined_data)
+        B=[]
+        f=[]
+        Count_blanks=[]
+        count=0
+        
+        for i in range(0,data_length):
+            if self.combined_data[i][index] is not None:
+                    if CheckTrigger==False:
+                        first_full=i
+                        CheckTrigger=True
+                        for j in range(first_full, data_length):
+                              if self.combined_data[j][index] is None:
+                                   #first_blank=j
+                                   B.append(j)
+
+                              if self.combined_data[j][index] is not None:
+                                   f.append(j)
+                                   last_full=f[-1]
+                
+                        break
+
+                                          
+        count= len(B)
+        if count>0:
+            n=0
+            while(n <= count-1):
+                k=n
+                while( k<=count-1 and (B[k]+1) in B):
+                    k=k+1
+
+                                        
+                if k <= count-1: 
+                    next_index = B[k] + 1
+                    prev_index = B[n] - 1
+                    if next_index <= last_full and prev_index >= 0 :
+                        delta=(self.combined_data[B[k]+1][index] - self.combined_data[B[n]-1][index])/ ((B[k]+1) - (B[n]-1))
+                        narojelo=False
+                    else:
+                        narojelo=True
+                        
+                    if narojelo==False:
+                        while n<=k:
+                                self.combined_data[B[n]][index]= self.combined_data[B[n]-1][index]+delta
+                                n=n+1
+                    else:
+                        break
+
+
+if __name__=="__main__":
+     combined_data=
