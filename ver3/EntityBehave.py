@@ -7,6 +7,7 @@ import Entity
 from dateutil import parser
 
 
+
 class V2RelationBehave():
     def New(self,Surce,Desi):
         uid = com.Common_UID.new(Surce+Desi)
@@ -113,8 +114,10 @@ class V2RelationStatus():
           self.DataProperty2=com.ProcesStatus.Null
           self.combined_data = [[None, None] for _ in range(86400)]
           
-          
+          self.IdealMinTime=15
           self.StartProcess()
+          #self.StartProcess2()
+          
           
 
 
@@ -139,6 +142,11 @@ class V2RelationStatus():
           #cov=self.covariance(smaller_array)
           #print(cov)
      
+     def StartProcess2(self):
+          pass
+
+
+
      def CheckData(PropOption):
           #if com.Common_Time.Now == PropOption.ut:
 
@@ -154,13 +162,18 @@ class V2RelationStatus():
           #print(response)
           return response
      
-     def time_to_seconds(time_str):
+     def time_to_seconds(self,date_time_str=None):
           try:
-               dt = parser.parse(time_str)
+               if date_time_str is None:
+                    dt=datetime.now()
+               else:
+                    dt = parser.parse(date_time_str)
+
                return dt.hour * 3600 + dt.minute * 60 + dt.second
           except (ValueError, parser.ParserError) as e:
-               print(f"Error parsing time string '{time_str}': {e}")
+               print(f"Error parsing time string '{date_time_str}': {e}")
                return None
+          
      
      def setDataToArray(self, data1, data2):
 
@@ -179,35 +192,6 @@ class V2RelationStatus():
                for j in range (et_seconds2, ut_seconds2):
                 self.combined_data[j][1]=value2
                #self.combined_data[ut_seconds2][1]=value2
-
-     def interpolate_missing_values(combined_data, index):
-               last_value = None
-               last_value_index = None
-
-               for i in range(86400):
-                    if combined_data[i][index] is not None:
-                         if last_value is not None:
-                              step = (combined_data[i][index] - last_value) / (i - last_value_index)
-                              for j in range(last_value_index + 1, i):
-                                   combined_data[j][index] = round(last_value + step * (j - last_value_index), 4)
-                         last_value = combined_data[i][index]
-                         last_value_index = i
-
-     def find_common_range(data1, data2):
-          pass
-          # start1, end1 = find_range(data1)
-          # start2, end2 = find_range(data2)
-          # common_start = max(start1, start2)
-          # common_end = min(end1, end2)
-          # return common_start, common_end
-
-     def find_common_range2(data1, data2):
-          pass
-          # start1, end1 = find_range(data1)
-          # start2, end2 = find_range(data2)
-          # common_start = max(start1, start2)
-          # common_end = min(end1, end2)
-          # return common_start, common_end
         
      def FindBlankRange(self,index):
         CheckTrigger = False
@@ -265,6 +249,9 @@ class V2RelationStatus():
                     else:
                         break
 
+     def FindBlankRangeversion2(self,index):
+          pass
+
 
      def createSyncTimeFrame(self,IdealMinTime):
           CurrentTime= com.Common_Time.Now()
@@ -272,7 +259,7 @@ class V2RelationStatus():
           len(self.combined_data)
           StartSecTime=NowSec-(IdealMinTime*60)
           syncdata=self.combined_data[StartSecTime:NowSec]
-          return syncdata
+          #return syncdata
 
      def covariance(self, syncdata):
           data1=[]
@@ -288,11 +275,9 @@ class V2RelationStatus():
                count1=len(data1)
                count2=len(data2)
                #len(data1)==len(data2)?==len(syncdata)?
-
-
           for j in range(len(data1)):
-               sum1=data1[j]+sum1
-               sum2=data2[j]+sum2
+               sum1+=data1[j]
+               sum2+=data2[j]
           
           avg1 =sum1/len(data1)
           avg2 =sum2/len(data2)
@@ -347,12 +332,6 @@ class V2RelationStatus():
           pass
         
 
-if __name__=="__main__":
-     SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"
-     DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
-     RelationStatus=V2RelationStatus(SurceUID, DesiUID)
-     test=RelationStatus.StartProcess()
-     #print(test)
 
 
 class V2RelationStatusV2(V2RelationStatus):
@@ -380,3 +359,9 @@ class RelationMatrix():
           else:
                return com.ProcesStatus.eval_false_data
           
+if __name__=="__main__":
+     SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"
+     DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
+     RelationStatus=V2RelationStatus(SurceUID, DesiUID)
+     test=RelationStatus.StartProcess2()
+     #print(test)
