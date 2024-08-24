@@ -1,4 +1,29 @@
-def FindBlankRange(self,index):
+import json
+import os
+from datetime import datetime
+
+class V2RelationStatus():
+
+    uid_watt = "6PEW67J130A4J262J246R7K671UJ0FJ40"
+    uid_ampere = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
+    timestamp = "2024-07-27 11:58:23"
+    base_url = "http://www.asset23d.ir/api/OBJVALUE"
+
+    def __init__(self):
+        self.combined_data=[[None, None],[None, None],[7, None],[None, None],[5, None],[None, None],[None, None],
+                            [None, None],[0, None],[None, None],[15, None],[17, None],[None, None]]
+          
+          
+        self.StartProcess()
+
+    def StartProcess(self):
+
+          #combined_data = [[None, None] for _ in range(86400)]
+        self.FindBlankRange(0)
+        print(self.combined_data)
+        #self.FindBlankRange(1)
+
+    def FindBlankRange(self,index):
         CheckTrigger = False
         narojelo=False
         last_full=None
@@ -11,49 +36,46 @@ def FindBlankRange(self,index):
         f=[]
         Count_blanks=[]
         count=0
-        
-        for i in range(0,data_length):
+        i=0
+            
+        while(i<data_length):
             if self.combined_data[i][index] is not None:
                     if CheckTrigger==False:
                         first_full=i
                         CheckTrigger=True
-                        for j in range(first_full, data_length):
-                              if self.combined_data[j][index] is None:
-                                   #first_blank=j
-                                   B.append(j)
-
-                              if self.combined_data[j][index] is not None:
-                                   f.append(j)
-                                   last_full=f[-1]
-                
-                        break
-
-                                          
-        count= len(B)
-        if count>0:
-            n=0
-            while(n <= count-1):
-                k=n
-                while( k<=count-1 and (B[k]+1) in B):
-                    k=k+1
-
-                                        
-                if k <= count-1: 
-                    next_index = B[k] + 1
-                    prev_index = B[n] - 1
-                    if next_index <= last_full and prev_index >= 0 :
-                        delta=(self.combined_data[B[k]+1][index] - self.combined_data[B[n]-1][index])/ ((B[k]+1) - (B[n]-1))
-                        narojelo=False
-                    else:
-                        narojelo=True
                         
-                    if narojelo==False:
-                        while n<=k:
-                                self.combined_data[B[n]][index]= self.combined_data[B[n]-1][index]+delta
-                                n=n+1
-                    else:
-                        break
-
-
+            if CheckTrigger==True:
+                if self.combined_data[i][index] is None:
+                    first_blank=i
+                    for j in range(first_blank,data_length ):
+                        if self.combined_data[j][index] is None:
+                            last_blank=j
+                            khali_hast=True
+                            
+                            
+                            
+                        else:
+                            if khali_hast==True:
+                                self.GapFiller(first_blank ,last_blank ,index)
+                                khali_hast=False
+                                i=j-1
+                                break
+                        
+                            
+            i+=1
+                                    
+                            
+    def GapFiller(self,start,end,index):
+        delta=0
+        BeforeBlank=self.combined_data[start-1][index]
+        AfterBlank=self.combined_data[end+1][index]
+        delta=(AfterBlank-BeforeBlank)/((end+1)-(start-1))
+        for k in range (start,end+1):
+            self.combined_data[k][index]=self.combined_data[k-1][index]+delta
+        
+      
+      
+  
 if __name__=="__main__":
-     combined_data=
+    RelationStatus=V2RelationStatus()
+    test=RelationStatus.StartProcess()

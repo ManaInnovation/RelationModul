@@ -250,7 +250,53 @@ class V2RelationStatus():
                         break
 
      def FindBlankRangeversion2(self,index):
-          pass
+        CheckTrigger = False
+        narojelo=False
+        last_full=None
+        first_full = None
+        first_blank = None
+        last_blank = None
+        finalDataBlock=86400
+        data_length = len(self.combined_data)
+        B=[]
+        f=[]
+        Count_blanks=[]
+        count=0
+        i=0
+            
+        while(i<data_length):
+            if self.combined_data[i][index] is not None:
+                    if CheckTrigger==False:
+                        first_full=i
+                        CheckTrigger=True
+                        
+            if CheckTrigger==True:
+                if self.combined_data[i][index] is None:
+                    first_blank=i
+                    for j in range(first_blank,data_length ):
+                        if self.combined_data[j][index] is None:
+                            last_blank=j
+                            khali_hast=True
+                            
+                            
+                            
+                        else:
+                            if khali_hast==True:
+                                self.GapFiller(first_blank ,last_blank ,index)
+                                khali_hast=False
+                                i=j-1
+                                break
+                        
+                            
+            i+=1
+                                    
+     def GapFiller(self,start,end,index):
+        delta=0
+        BeforeBlank=self.combined_data[start-1][index]
+        AfterBlank=self.combined_data[end+1][index]
+        delta=(AfterBlank-BeforeBlank)/((end+1)-(start-1))
+        for k in range (start,end+1):
+            self.combined_data[k][index]=self.combined_data[k-1][index]+delta                      
 
 
      def createSyncTimeFrame(self,IdealMinTime):
