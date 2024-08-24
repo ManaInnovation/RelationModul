@@ -95,16 +95,11 @@ class V2RelationBehave():
             return CurentRelation
     
 class V2RelationStatus():
-
-     uid_watt = "6PEW67J130A4J262J246R7K671UJ0FJ40" #??
-     uid_ampere = "011W72B147CW0KV08O55GA2MTX5X4HDK4"#??
-     timestamp = "2024-07-27 11:58:23"#??
-     base_url = "http://www.asset23d.ir/api/OBJVALUE"#??
-
      def __init__(self, Surce, Desi) -> None:
 
-          #?? self.Surce
-          #?? self.Desi
+          self.Surce=SurceUID
+          self.Desi=Desi
+
           self.uid = com.Common_UID.new(Surce+Desi)
           self.ibehave = V2RelationBehave()
           self.CurentRelation = self.ibehave.Get(self.uid)
@@ -116,6 +111,7 @@ class V2RelationStatus():
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
           self.combined_data = [[None, None] for _ in range(86400)]
+          self.syncdata=[]
           
           self.IdealMinTime=15
           self.StartProcess()
@@ -129,32 +125,26 @@ class V2RelationStatus():
 
      def StartProcess(self):
           
-          # self.DataProperty1 = self.getData(self.CurentRelation['source'])
-          # self.DataProperty2 = self.getData(self.CurentRelation['destination'])
-          SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"  #??
-          DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"  #??
-          DataProperty1 = self.getData(SurceUID)
-          DataProperty2 = self.getData(DesiUID)
+          DataProperty1 = self.getData(self.Surce)
+          DataProperty2 = self.getData(self.Desi)
+          print(DataProperty1)
+          print(DataProperty2)
 
           self.setDataToArray(DataProperty1,DataProperty2)
-          starttime = self.time_to_seconds()
-          self.FindBlankRange(0)
-          self.FindBlankRange(1)
-          
-          endtime = self.time_to_seconds()
-
-          print(endtime-starttime)
           print(self.combined_data)
+
+          # starttime = self.time_to_seconds()
+          # self.FindBlankRangeversion2(0)
+          # self.FindBlankRangeversion2(1)
+          # endtime = self.time_to_seconds()
+
+          # print(endtime-starttime)
+          # print(self.combined_data)
           
 
-          smaller_array=self.createSyncTimeFrame(15) # ??
+          # self.createSyncTimeFrame()
+          # self.covariance()
 
-          self.covariance(smaller_array)
-
-          #smaller_array=self.createSyncTimeFrame(second_d,15)
-          #print(smaller_array)
-          #cov=self.covariance(smaller_array)
-          #print(cov)
      
      def StartProcess2(self):
           pass
@@ -170,7 +160,7 @@ class V2RelationStatus():
 
      def getData(self,uid):
           params = {"UID": uid,# "date": com.Common_Time.Now() 
-                    "date": "2024-07-27 12:12:12"   # ??
+                    "date": self.time_to_seconds()   # ??
                }
           response = com.RequestHandler.getRequest(com.CommonConfig.objvalue_url, params=params)
           #print(response)
@@ -197,7 +187,6 @@ class V2RelationStatus():
                value1 = float(entry1.get('va'))
                for i in range (et_seconds1, ut_seconds1):
                 self.combined_data[i][0]=value1
-               #self.combined_data[ut_seconds1][0]=value1
 
           for entry2 in data2:
                et_seconds2 = self.time_to_seconds(entry2.get('et'))
@@ -205,7 +194,9 @@ class V2RelationStatus():
                value2 = float(entry2.get('va'))
                for j in range (et_seconds2, ut_seconds2):
                 self.combined_data[j][1]=value2
-               #self.combined_data[ut_seconds2][1]=value2
+
+     def FillArray(self):
+          pass
         
      def FindBlankRange(self,index):
         CheckTrigger = False
@@ -312,15 +303,15 @@ class V2RelationStatus():
             self.combined_data[k][index]=self.combined_data[k-1][index]+delta                      
 
 
-     def createSyncTimeFrame(self,IdealMinTime):
+     def createSyncTimeFrame(self):
           CurrentTime= com.Common_Time.Now()
           NowSec=self.time_to_seconds(CurrentTime)
           len(self.combined_data)
-          StartSecTime=NowSec-(IdealMinTime*60)
-          syncdata=self.combined_data[StartSecTime:NowSec]
+          StartSecTime=NowSec-(self.IdealMinTime*60)
+          self.syncdata=self.combined_data[StartSecTime:NowSec]
           #return syncdata
 
-     def covariance(self, syncdata):
+     def covariance(self):
           data1=[]
           data2=[]
           sum1=0
@@ -328,9 +319,9 @@ class V2RelationStatus():
           dev1=[]
           dev2=[]
           totalSum=0
-          for i in range(len(syncdata)):
-               data1.append(syncdata[i][0])   
-               data2.append(syncdata[i][1])
+          for i in range(len(self.syncdata)):
+               data1.append(self.syncdata[i][0])   
+               data2.append(self.syncdata[i][1])
                count1=len(data1)
                count2=len(data2)
                #len(data1)==len(data2)?==len(syncdata)?
@@ -341,7 +332,7 @@ class V2RelationStatus():
           avg1 =sum1/len(data1)
           avg2 =sum2/len(data2)
 
-          for k in range(len(syncdata)):
+          for k in range(len(self.syncdata)):
                
                #d1=dev1.append(data1[k]-avg1)
                #d2=dev2.append(data2[k]-avg2)
@@ -349,7 +340,7 @@ class V2RelationStatus():
                #multiply=(dev1.append(syncdata[k][0]-avg1)) * (dev2.append(syncdata[k][1]-avg2))
                totalSum= multiply+totalSum
 
-          cov= totalSum/(len(syncdata)-1)
+          cov= totalSum/(len(self.syncdata)-1)
           #print(len(syncdata))
           return cov
 
@@ -419,8 +410,8 @@ class RelationMatrix():
                return com.ProcesStatus.eval_false_data
           
 if __name__=="__main__":
-     SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"
-     DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
+     SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
+     DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
      RelationStatus=V2RelationStatus(SurceUID, DesiUID)
      test=RelationStatus.StartProcess2()
      #print(test)
