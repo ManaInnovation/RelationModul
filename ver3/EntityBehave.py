@@ -96,12 +96,15 @@ class V2RelationBehave():
     
 class V2RelationStatus():
 
-     uid_watt = "6PEW67J130A4J262J246R7K671UJ0FJ40"
-     uid_ampere = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
-     timestamp = "2024-07-27 11:58:23"
-     base_url = "http://www.asset23d.ir/api/OBJVALUE"
+     uid_watt = "6PEW67J130A4J262J246R7K671UJ0FJ40" #??
+     uid_ampere = "011W72B147CW0KV08O55GA2MTX5X4HDK4"#??
+     timestamp = "2024-07-27 11:58:23"#??
+     base_url = "http://www.asset23d.ir/api/OBJVALUE"#??
 
      def __init__(self, Surce, Desi) -> None:
+
+          #?? self.Surce
+          #?? self.Desi
           self.uid = com.Common_UID.new(Surce+Desi)
           self.ibehave = V2RelationBehave()
           self.CurentRelation = self.ibehave.Get(self.uid)
@@ -118,6 +121,9 @@ class V2RelationStatus():
           self.StartProcess()
           #self.StartProcess2()
           
+
+          self.combi1 = []
+          self.combi2 = []
           
 
 
@@ -125,16 +131,24 @@ class V2RelationStatus():
           
           # self.DataProperty1 = self.getData(self.CurentRelation['source'])
           # self.DataProperty2 = self.getData(self.CurentRelation['destination'])
-          SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"
-          DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"
+          SurceUID = "6PEW67J130A4J262J246R7K671UJ0FJ40"  #??
+          DesiUID = "011W72B147CW0KV08O55GA2MTX5X4HDK4"  #??
           DataProperty1 = self.getData(SurceUID)
           DataProperty2 = self.getData(DesiUID)
 
           self.setDataToArray(DataProperty1,DataProperty2)
+          starttime = self.time_to_seconds()
           self.FindBlankRange(0)
           self.FindBlankRange(1)
+          
+          endtime = self.time_to_seconds()
+
+          print(endtime-starttime)
           print(self.combined_data)
-          smaller_array=self.createSyncTimeFrame(15)
+          
+
+          smaller_array=self.createSyncTimeFrame(15) # ??
+
           self.covariance(smaller_array)
 
           #smaller_array=self.createSyncTimeFrame(second_d,15)
@@ -156,7 +170,7 @@ class V2RelationStatus():
 
      def getData(self,uid):
           params = {"UID": uid,# "date": com.Common_Time.Now() 
-                    "date": "2024-07-27 12:12:12"
+                    "date": "2024-07-27 12:12:12"   # ??
                }
           response = com.RequestHandler.getRequest(com.CommonConfig.objvalue_url, params=params)
           #print(response)
@@ -257,6 +271,7 @@ class V2RelationStatus():
         first_blank = None
         last_blank = None
         finalDataBlock=86400
+
         data_length = len(self.combined_data)
         B=[]
         f=[]
@@ -277,8 +292,6 @@ class V2RelationStatus():
                         if self.combined_data[j][index] is None:
                             last_blank=j
                             khali_hast=True
-                            
-                            
                             
                         else:
                             if khali_hast==True:

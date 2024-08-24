@@ -107,7 +107,20 @@ class calculation():
         return average
     
     
+class FileControl():
+    def SaveJson(path,file):
+        pass
 
+    def Savetext(path,file):
+        pass
+
+    def OpenJson(path,file):
+        pass
+
+    def Opentext(path,file):
+        pass
+
+        
 
     
 
