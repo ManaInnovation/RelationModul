@@ -111,6 +111,7 @@ if property_list:
                 array.append(prop)
 
     for prop in array:
-        print(prop)  # This will use the __str__ method of the Property class
+        print(prop)               # This will use the __str__ method of the Property class
 
-#print(now)
+
+print(datetime.now().replace(microsecond=0))

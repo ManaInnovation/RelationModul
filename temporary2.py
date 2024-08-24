@@ -22,6 +22,7 @@ class V2RelationStatus():
         self.FindBlankRange(0)
         print(self.combined_data)
         #self.FindBlankRange(1)
+        print(datetime.now())
 
     def FindBlankRange(self,index):
         CheckTrigger = False

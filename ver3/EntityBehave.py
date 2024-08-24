@@ -122,23 +122,24 @@ class V2RelationStatus():
           self.combi2 = []
           
 
-
      def StartProcess(self):
-          
+          print("start process called")
           DataProperty1 = self.getData(self.Surce)
           DataProperty2 = self.getData(self.Desi)
-          print(DataProperty1)
-          print(DataProperty2)
+          #print(DataProperty1)
+          #print(DataProperty2)
 
           self.setDataToArray(DataProperty1,DataProperty2)
-          print(self.combined_data)
+          #print(self.combined_data)
 
-          # starttime = self.time_to_seconds()
-          # self.FindBlankRangeversion2(0)
-          # self.FindBlankRangeversion2(1)
-          # endtime = self.time_to_seconds()
+          starttime = self.time_to_seconds()
+          self.FindBlankRangeversion2(0)
+          self.FindBlankRangeversion2(1)
+          endtime = self.time_to_seconds()
 
-          # print(endtime-starttime)
+          print("endtime-starttime:",endtime-starttime)
+          #print(self.combined_data)
+          com.FileControl.SaveJson("D:/JsonData/tests/data1","data2.json", self.combined_data)
           # print(self.combined_data)
           
 
@@ -158,9 +159,10 @@ class V2RelationStatus():
           pass
           #if com.Common_Time.Now ==   
 
+
      def getData(self,uid):
-          params = {"UID": uid,# "date": com.Common_Time.Now() 
-                    "date": self.time_to_seconds()   # ??
+          params = {"UID": uid,
+                    "date": datetime.now().replace(microsecond=0)  
                }
           response = com.RequestHandler.getRequest(com.CommonConfig.objvalue_url, params=params)
           #print(response)
@@ -183,16 +185,20 @@ class V2RelationStatus():
 
           for entry1 in data1:
                et_seconds1 = self.time_to_seconds(entry1.get('et'))
+               #print(et_seconds1)
                ut_seconds1 = self.time_to_seconds(entry1.get('ut'))
+               #print(ut_seconds1)
                value1 = float(entry1.get('va'))
-               for i in range (et_seconds1, ut_seconds1):
+               #print(value1)
+               for i in range (et_seconds1, ut_seconds1+1):
                 self.combined_data[i][0]=value1
+                #print(self.combined_data[i][0])
 
           for entry2 in data2:
                et_seconds2 = self.time_to_seconds(entry2.get('et'))
                ut_seconds2 = self.time_to_seconds(entry2.get('ut'))
                value2 = float(entry2.get('va'))
-               for j in range (et_seconds2, ut_seconds2):
+               for j in range (et_seconds2, ut_seconds2+1):
                 self.combined_data[j][1]=value2
 
      def FillArray(self):
@@ -211,25 +217,27 @@ class V2RelationStatus():
         f=[]
         Count_blanks=[]
         count=0
-        
         for i in range(0,data_length):
             if self.combined_data[i][index] is not None:
                     if CheckTrigger==False:
                         first_full=i
                         CheckTrigger=True
-                        for j in range(first_full, data_length):
-                              if self.combined_data[j][index] is None:
-                                   #first_blank=j
-                                   B.append(j)
-
-                              if self.combined_data[j][index] is not None:
-                                   f.append(j)
-                                   last_full=f[-1]
-                
+                        
                         break
+                        
+        for j in range(first_full, data_length):
+            if self.combined_data[j][index] is None:
+                #first_blank=j
+                B.append(j)
+                count= len(B)
+        
+        for z in range(first_full,data_length):
+            if self.combined_data[z][index] is not None:
+                f.append(z)
+                last_full=f[-1]
+                
+                                 
 
-                                          
-        count= len(B)
         if count>0:
             n=0
             while(n <= count-1):
@@ -237,8 +245,10 @@ class V2RelationStatus():
                 while( k<=count-1 and (B[k]+1) in B):
                     k=k+1
 
-                                        
+
+
                 if k <= count-1: 
+               
                     next_index = B[k] + 1
                     prev_index = B[n] - 1
                     if next_index <= last_full and prev_index >= 0 :
@@ -247,12 +257,19 @@ class V2RelationStatus():
                     else:
                         narojelo=True
                         
+                   
+                    #if prev_index <= last_full-1 and prev_index >= 0 :
                     if narojelo==False:
                         while n<=k:
                                 self.combined_data[B[n]][index]= self.combined_data[B[n]-1][index]+delta
                                 n=n+1
+                               
+
+
                     else:
                         break
+                        
+
 
      def FindBlankRangeversion2(self,index):
         CheckTrigger = False
@@ -269,16 +286,19 @@ class V2RelationStatus():
         Count_blanks=[]
         count=0
         i=0
-            
+          
+        
         while(i<data_length):
             if self.combined_data[i][index] is not None:
                     if CheckTrigger==False:
                         first_full=i
                         CheckTrigger=True
-                        
+
+                     
             if CheckTrigger==True:
                 if self.combined_data[i][index] is None:
                     first_blank=i
+               
                     for j in range(first_blank,data_length ):
                         if self.combined_data[j][index] is None:
                             last_blank=j
@@ -290,8 +310,7 @@ class V2RelationStatus():
                                 khali_hast=False
                                 i=j-1
                                 break
-                        
-                            
+                     
             i+=1
                                     
      def GapFiller(self,start,end,index):
@@ -413,5 +432,5 @@ if __name__=="__main__":
      SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
      DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
      RelationStatus=V2RelationStatus(SurceUID, DesiUID)
-     test=RelationStatus.StartProcess2()
+     #test=RelationStatus.StartProcess()
      #print(test)

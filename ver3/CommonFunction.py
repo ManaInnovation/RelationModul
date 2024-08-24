@@ -29,6 +29,7 @@ class ControlReturn():
 
 class CommonConfig():
     objvalue_url="http://www.asset23d.ir/api/OBJVALUE"
+    
 
 
 class Common_UID():
@@ -60,11 +61,6 @@ class RequestHandler():
             except requests.exceptions.RequestException as e:
                 return e
             
-            
-        
-
-
-        
     def postRequest(url, data=None, json=None, **kwargs):
         pass
 
@@ -108,8 +104,24 @@ class calculation():
     
     
 class FileControl():
-    def SaveJson(path,file):
-        pass
+    def SaveJson(path,filename,data):
+        formatted_data = {str(i): value for i, value in enumerate(data)}
+        file_path = f"{path}/{filename}.json"
+        with open(file_path, 'w') as json_file:
+            json.dump(formatted_data, json_file,indent=4)
+
+        
+    #     data = {
+    #     "id": frame.id,
+    #     "hashcode": frame.hashcode,
+    #     "start": frame.start.strftime("%m/%d/%Y %I:%M:%S %p"),
+    #     "end": frame.end.strftime("%m/%d/%Y %I:%M:%S %p"),
+    #     "Duration": str(frame.duration),
+    #     "Type": frame.type,
+    #     "SubjectList": [{"name": subj.name, "value": subj.value} for subj in frame.subject_list]
+    # }
+    # with open(filename, 'w') as f:
+    #     json.dump(frame_data, f, indent=4)
 
     def Savetext(path,file):
         pass
