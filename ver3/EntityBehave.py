@@ -126,11 +126,8 @@ class V2RelationStatus():
           print("start process called")
           DataProperty1 = self.getData(self.Surce)
           DataProperty2 = self.getData(self.Desi)
-          #print(DataProperty1)
-          #print(DataProperty2)
 
           self.setDataToArray(DataProperty1,DataProperty2)
-          #print(self.combined_data)
 
           starttime = self.time_to_seconds()
           self.FindBlankRangeversion2(0)
@@ -138,19 +135,19 @@ class V2RelationStatus():
           endtime = self.time_to_seconds()
 
           print("endtime-starttime:",endtime-starttime)
-          #print(self.combined_data)
-          com.FileControl.SaveJson("D:/JsonData/tests/data1","data2.json", self.combined_data)
-          # print(self.combined_data)
           
 
-          # self.createSyncTimeFrame()
-          # self.covariance()
+          com.FileControl.SaveJson("D:/JsonData/tests/data1","data3.json", self.combined_data)
+          self.StartProcess2(0)
+          self.StartProcess2(1)
 
      
-     def StartProcess2(self):
-          pass
-
-
+     def StartProcess2(self,index):
+          tsom=0
+          for i in range(0, len(self.combined_data)):
+               if self.combined_data[i][index] is not None:
+                    tsom+=self.combined_data[i][index]
+          print(tsom)
 
      def CheckData(PropOption):
           #if com.Common_Time.Now == PropOption.ut:
@@ -183,38 +180,29 @@ class V2RelationStatus():
      
      def setDataToArray(self, data1, data2):
 
-          for entry1 in data1:
-               et_seconds1 = self.time_to_seconds(entry1.get('et'))
-               #print(et_seconds1)
-               ut_seconds1 = self.time_to_seconds(entry1.get('ut'))
-               #print(ut_seconds1)
-               value1 = float(entry1.get('va'))
-               #print(value1)
-               for i in range (et_seconds1, ut_seconds1+1):
-                self.combined_data[i][0]=value1
-                #print(self.combined_data[i][0])
+          self.FillArray(data1,0)
+          self.FillArray(data2,1)
 
-          for entry2 in data2:
-               et_seconds2 = self.time_to_seconds(entry2.get('et'))
-               ut_seconds2 = self.time_to_seconds(entry2.get('ut'))
-               value2 = float(entry2.get('va'))
-               for j in range (et_seconds2, ut_seconds2+1):
-                self.combined_data[j][1]=value2
+     def FillArray(self, data, index):
+          for entry in data:
+               et_seconds = self.time_to_seconds(entry.get('et'))
+               ut_seconds = self.time_to_seconds(entry.get('ut'))
+               value = float(entry.get('va'))
+               for j in range (et_seconds, ut_seconds+1):
+                self.combined_data[j][index]=value
 
-     def FillArray(self):
-          pass
         
      def FindBlankRange(self,index):
         CheckTrigger = False
-        narojelo=False
+        stop=False
         last_full=None
         first_full = None
         first_blank = None
         last_blank = None
         finalDataBlock=86400
         data_length = len(self.combined_data)
-        B=[]
-        f=[]
+        Blanks=[]
+        full=[]
         Count_blanks=[]
         count=0
         for i in range(0,data_length):
@@ -227,45 +215,40 @@ class V2RelationStatus():
                         
         for j in range(first_full, data_length):
             if self.combined_data[j][index] is None:
-                #first_blank=j
-                B.append(j)
-                count= len(B)
+                Blanks.append(j)
+                count= len(Blanks)
         
         for z in range(first_full,data_length):
             if self.combined_data[z][index] is not None:
-                f.append(z)
-                last_full=f[-1]
+                full.append(z)
+                last_full=full[-1]
                 
-                                 
-
         if count>0:
             n=0
             while(n <= count-1):
                 k=n
-                while( k<=count-1 and (B[k]+1) in B):
+                while( k<=count-1 and (Blanks[k]+1) in Blanks):
                     k=k+1
 
 
 
                 if k <= count-1: 
                
-                    next_index = B[k] + 1
-                    prev_index = B[n] - 1
+                    next_index = Blanks[k] + 1
+                    prev_index = Blanks[n] - 1
                     if next_index <= last_full and prev_index >= 0 :
-                        delta=(self.combined_data[B[k]+1][index] - self.combined_data[B[n]-1][index])/ ((B[k]+1) - (B[n]-1))
-                        narojelo=False
+                        delta=(self.combined_data[Blanks[k]+1][index] - self.combined_data[Blanks[n]-1][index])/ ((Blanks[k]+1) - (Blanks[n]-1))
+                        stop=False
                     else:
-                        narojelo=True
+                        stop=True
                         
                    
                     #if prev_index <= last_full-1 and prev_index >= 0 :
-                    if narojelo==False:
+                    if stop==False:
                         while n<=k:
-                                self.combined_data[B[n]][index]= self.combined_data[B[n]-1][index]+delta
+                                self.combined_data[Blanks[n]][index]= self.combined_data[Blanks[n]-1][index]+delta
                                 n=n+1
                                
-
-
                     else:
                         break
                         
@@ -273,18 +256,11 @@ class V2RelationStatus():
 
      def FindBlankRangeversion2(self,index):
         CheckTrigger = False
-        narojelo=False
-        last_full=None
-        first_full = None
         first_blank = None
         last_blank = None
         finalDataBlock=86400
 
         data_length = len(self.combined_data)
-        B=[]
-        f=[]
-        Count_blanks=[]
-        count=0
         i=0
           
         
@@ -302,24 +278,51 @@ class V2RelationStatus():
                     for j in range(first_blank,data_length ):
                         if self.combined_data[j][index] is None:
                             last_blank=j
-                            khali_hast=True
+                            IsNone=True
                             
                         else:
-                            if khali_hast==True:
+                            if IsNone==True:
                                 self.GapFiller(first_blank ,last_blank ,index)
-                                khali_hast=False
+                                IsNone=False
                                 i=j-1
                                 break
                      
             i+=1
                                     
+     
+     def OptimizeBlankRange(self, index):
+        CheckTrigger = False
+        first_blank = None
+        data_length = len(self.combined_data)
+        i = 0
+
+
+        while i < data_length:
+            if self.combined_data[i][index] is not None:
+                if not CheckTrigger:
+                    CheckTrigger = True
+
+            if CheckTrigger and self.combined_data[i][index] is None:
+                first_blank = i
+                
+                while i < data_length and self.combined_data[i][index] is None:
+                    i += 1
+                
+                self.GapFiller(first_blank, i - 1, index)
+                    
+                continue  # Skip the normal increment of i since we already incremented inside the loop
+
+            i += 1
+
      def GapFiller(self,start,end,index):
         delta=0
-        BeforeBlank=self.combined_data[start-1][index]
-        AfterBlank=self.combined_data[end+1][index]
-        delta=(AfterBlank-BeforeBlank)/((end+1)-(start-1))
-        for k in range (start,end+1):
-            self.combined_data[k][index]=self.combined_data[k-1][index]+delta                      
+        if end + 1 < len(self.combined_data):
+          BeforeBlank=self.combined_data[start-1][index]
+          AfterBlank=self.combined_data[end+1][index]
+          delta=(AfterBlank-BeforeBlank)/((end+1)-(start-1))
+          for k in range (start,end+1):
+               self.combined_data[k][index]=self.combined_data[k-1][index]+delta                      
+
 
 
      def createSyncTimeFrame(self):
@@ -331,32 +334,27 @@ class V2RelationStatus():
           #return syncdata
 
      def covariance(self):
-          data1=[]
-          data2=[]
-          sum1=0
-          sum2=0
-          dev1=[]
-          dev2=[]
+          DataProperty1=[]
+          DataProperty2=[]
+          DataSum1=0
+          DateSum2=0
           totalSum=0
-          for i in range(len(self.syncdata)):
-               data1.append(self.syncdata[i][0])   
-               data2.append(self.syncdata[i][1])
-               count1=len(data1)
-               count2=len(data2)
-               #len(data1)==len(data2)?==len(syncdata)?
-          for j in range(len(data1)):
-               sum1+=data1[j]
-               sum2+=data2[j]
-          
-          avg1 =sum1/len(data1)
-          avg2 =sum2/len(data2)
 
-          for k in range(len(self.syncdata)):
-               
-               #d1=dev1.append(data1[k]-avg1)
-               #d2=dev2.append(data2[k]-avg2)
-               multiply= ((data1[k]-avg1) * (data2[k]-avg2) )
-               #multiply=(dev1.append(syncdata[k][0]-avg1)) * (dev2.append(syncdata[k][1]-avg2))
+          for i in range(len(self.syncdata)):
+               DataProperty1.append(self.syncdata[i][0])   
+               DataProperty2.append(self.syncdata[i][1])
+               count1=len(DataProperty1)
+               count2=len(DataProperty2)
+               #len(data1)==len(data2)?==len(syncdata)?
+          for j in range(len(DataProperty1)):
+               DataSum1+=DataProperty1[j]
+               DateSum2+=DataProperty2[j]
+          
+          avg1 =DataSum1/len(DataProperty1)
+          avg2 =DateSum2/len(DataProperty2)
+
+          for k in range(len(self.syncdata)):              
+               multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
                totalSum= multiply+totalSum
 
           cov= totalSum/(len(self.syncdata)-1)
