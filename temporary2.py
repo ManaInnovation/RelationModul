@@ -132,7 +132,7 @@ class V2RelationStatus():
                 # Fill the gap if a sequence of None values was found
                 self.GapFiller(first_blank, i - 1, index)
                     
-                continue  # Skip the normal increment of i since we already incremented inside the loop
+                #continue  # Skip the normal increment of i since we already incremented inside the loop
 
             i += 1
                                 

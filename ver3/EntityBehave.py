@@ -130,14 +130,14 @@ class V2RelationStatus():
           self.setDataToArray(DataProperty1,DataProperty2)
 
           starttime = self.time_to_seconds()
-          self.FindBlankRangeversion2(0)
-          self.FindBlankRangeversion2(1)
+          self.OptimizeBlankRange(0)
+          self.OptimizeBlankRange(1)
           endtime = self.time_to_seconds()
 
           print("endtime-starttime:",endtime-starttime)
           
 
-          com.FileControl.SaveJson("D:/JsonData/tests/data1","data3.json", self.combined_data)
+          com.FileControl.SaveJson("D:/JsonData/tests/data1","data5.json", self.combined_data)
           self.StartProcess2(0)
           self.StartProcess2(1)
 
@@ -310,7 +310,7 @@ class V2RelationStatus():
                 
                 self.GapFiller(first_blank, i - 1, index)
                     
-                continue  # Skip the normal increment of i since we already incremented inside the loop
+                continue
 
             i += 1
 
