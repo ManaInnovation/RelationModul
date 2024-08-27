@@ -135,7 +135,34 @@ class V2RelationStatus():
                 #continue  # Skip the normal increment of i since we already incremented inside the loop
 
             i += 1
-                                
+
+
+
+    def covariance(self,):
+        DataProperty1=[]
+        DataProperty2=[]
+        DataSum1=0
+        DateSum2=0
+        totalSum=0
+        k=0
+        for i in range(len(self.candidate_data)):
+               DataProperty1.append(self.candidate_data[i][0])   
+               DataProperty2.append(self.candidate_data[i][1])
+               count1=len(DataProperty1)
+               count2=len(DataProperty2)
+               #len(data1)==len(data2)?==len(syncdata)?
+        for j in range(len(DataProperty1)):
+                DataSum1+=DataProperty1[j]
+                DateSum2+=DataProperty2[j]
+        avg1 =DataSum1/len(DataProperty1)
+        avg2 =DateSum2/len(DataProperty2)
+        for k in range(len(self.DataProperty1)):              
+            multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
+            totalSum+= multiply
+        cov= totalSum/(len(self.candidate_data)-1)
+        print(cov)
+
+
 if __name__=="__main__":
     RelationStatus=V2RelationStatus()
     #test=RelationStatus.StartProcess()

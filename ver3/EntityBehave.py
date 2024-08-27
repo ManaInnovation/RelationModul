@@ -111,6 +111,7 @@ class V2RelationStatus():
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
           self.combined_data = [[None, None] for _ in range(86400)]
+          self.candidate_data=[]
           self.syncdata=[]
           
           self.IdealMinTime=15
@@ -128,18 +129,21 @@ class V2RelationStatus():
           DataProperty2 = self.getData(self.Desi)
 
           self.setDataToArray(DataProperty1,DataProperty2)
+          #print(self.combined_data)
+          start_sec,now_sec=self.createSyncTimeFrame()
+          #print(start_sec,now_sec)
+          self.CreateCandidateData(start_sec,now_sec)
+          #print(self.candidate_data)
+          self.covariance()
 
-          starttime = self.time_to_seconds()
-          self.OptimizeBlankRange(0)
-          self.OptimizeBlankRange(1)
-          endtime = self.time_to_seconds()
-
-          print("endtime-starttime:",endtime-starttime)
-          
-
-          com.FileControl.SaveJson("D:/JsonData/tests/data1","data5.json", self.combined_data)
-          self.StartProcess2(0)
-          self.StartProcess2(1)
+          # starttime = self.time_to_seconds()
+          # self.OptimizeBlankRange(0)
+          # self.OptimizeBlankRange(1)
+          # endtime = self.time_to_seconds()
+          # print("endtime-starttime:",endtime-starttime)
+          # com.FileControl.SaveJson("D:/JsonData/tests/data1","data5.json", self.combined_data)
+          # self.StartProcess2(0)
+          # self.StartProcess2(1)
 
      
      def StartProcess2(self,index):
@@ -191,7 +195,11 @@ class V2RelationStatus():
                for j in range (et_seconds, ut_seconds+1):
                 self.combined_data[j][index]=value
 
-        
+     def CreateCandidateData(self,start,now):
+          for i in range(start, now):
+               if self.combined_data[i][0]!=None and self.combined_data[i][1] != None:
+                    self.candidate_data.append([self.combined_data[i][0], self.combined_data[i][1], i])
+
      def FindBlankRange(self,index):
         CheckTrigger = False
         stop=False
@@ -330,36 +338,42 @@ class V2RelationStatus():
           NowSec=self.time_to_seconds(CurrentTime)
           len(self.combined_data)
           StartSecTime=NowSec-(self.IdealMinTime*60)
-          self.syncdata=self.combined_data[StartSecTime:NowSec]
+          return StartSecTime,NowSec
+          #self.syncdata=self.combined_data[StartSecTime:NowSec]
           #return syncdata
 
      def covariance(self):
           DataProperty1=[]
           DataProperty2=[]
-          DataSum1=0
-          DateSum2=0
-          totalSum=0
-
-          for i in range(len(self.syncdata)):
-               DataProperty1.append(self.syncdata[i][0])   
-               DataProperty2.append(self.syncdata[i][1])
+          for i in range(len(self.candidate_data)):
+               DataProperty1.append(self.candidate_data[i][0])   
+               DataProperty2.append(self.candidate_data[i][1])
                count1=len(DataProperty1)
                count2=len(DataProperty2)
                #len(data1)==len(data2)?==len(syncdata)?
-          for j in range(len(DataProperty1)):
-               DataSum1+=DataProperty1[j]
-               DateSum2+=DataProperty2[j]
-          
-          avg1 =DataSum1/len(DataProperty1)
-          avg2 =DateSum2/len(DataProperty2)
 
-          for k in range(len(self.syncdata)):              
+          totalSum=self.DataSum(DataProperty1,DataProperty2,len(DataProperty1),len(DataProperty2))
+          cov= totalSum/(len(self.candidate_data)-1)
+          print(cov)
+
+     def DataSum(self,data1,data2,length1,length2):
+          DataSum1=0
+          DateSum2=0
+          for j in range(len(data1)):
+               DataSum1+=data1[j]
+               DateSum2+=data2[j]
+
+          avg1=com.calculation.calculate_average(DataSum1,length1)
+          avg2= com.calculation.calculate_average(DateSum2,length2)
+          totalSum=self.Deviation(length1, data1,data2, avg1,avg2)
+          return totalSum
+     
+     def Deviation(self,length1,DataProperty1,DataProperty2,avg1,avg2 ):
+          totalSum=0
+          for k in range(length1):              
                multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
-               totalSum= multiply+totalSum
-
-          cov= totalSum/(len(self.syncdata)-1)
-          #print(len(syncdata))
-          return cov
+               totalSum+= multiply
+          return totalSum
 
 
      def checkStatus(self,covariance):

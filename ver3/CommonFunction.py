@@ -98,8 +98,12 @@ class timeFrame():
 
 class calculation():
 
-    def calculate_average(values1):
-        average = sum(values1) / len(values1)
+    def calculate_average(sum=None, length= None,values1=None):
+        if sum==None and length==None and values1!=None:
+            average = sum(values1) / len(values1)
+        elif sum!=None and length!=None and values1==None:
+            average= sum/length
+
         return average
     
     
