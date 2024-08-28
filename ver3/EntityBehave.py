@@ -118,7 +118,6 @@ class V2RelationStatus():
           self.StartProcess()
           #self.StartProcess2()
           
-
           self.combi1 = []
           self.combi2 = []
           
@@ -134,7 +133,8 @@ class V2RelationStatus():
           #print(start_sec,now_sec)
           self.CreateCandidateData(start_sec,now_sec)
           #print(self.candidate_data)
-          self.covariance()
+          cov=self.covariance()
+          self.checkStatus(cov)
 
           # starttime = self.time_to_seconds()
           # self.OptimizeBlankRange(0)
@@ -355,16 +355,17 @@ class V2RelationStatus():
           totalSum=self.DataSum(DataProperty1,DataProperty2,len(DataProperty1),len(DataProperty2))
           cov= totalSum/(len(self.candidate_data)-1)
           print(cov)
+          return cov
 
      def DataSum(self,data1,data2,length1,length2):
           DataSum1=0
-          DateSum2=0
+          DataSum2=0
           for j in range(len(data1)):
                DataSum1+=data1[j]
-               DateSum2+=data2[j]
+               DataSum2+=data2[j]
 
           avg1=com.calculation.calculate_average(DataSum1,length1)
-          avg2= com.calculation.calculate_average(DateSum2,length2)
+          avg2= com.calculation.calculate_average(DataSum2,length2)
           totalSum=self.Deviation(length1, data1,data2, avg1,avg2)
           return totalSum
      
@@ -389,7 +390,7 @@ class V2RelationStatus():
           if self.CurentRelation.direction==self.LastRelation.direction:
                self.CurentRelation.EndTime=self.LastRelation.EndTime
           else:
-               changeStatus(self,CurentRelation,self.LastRelation)
+               self.changeStatus(self,self.CurentRelation,self.LastRelation)
 
 
      def checkLastRelationStatus():
@@ -404,11 +405,8 @@ class V2RelationStatus():
           
      def updateLastStatus():
           pass
-
-               
      def getDataLog():
-          pass
-        
+          pass      
      def CreateTimeFrame():
           pass
         
