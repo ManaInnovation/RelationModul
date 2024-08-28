@@ -139,10 +139,9 @@ class FileControl():
         pass
 
         
-
-    
-
-
+class SubjectItem():
+    def jsonify_value(self, subject_item):
+        return json.dumps(subject_item.__dict__)
 
 
 

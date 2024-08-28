@@ -33,8 +33,11 @@ class LastEntityRelation:
 
 
 
-
-
+class SubjectItem:
+      name: str = any
+      value: str = any
+      type: str = any
+      
 class TotalRelation:
     def __init__(self, uid, type, time, RelationNumber):
         self.uid=uid

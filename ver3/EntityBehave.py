@@ -135,6 +135,8 @@ class V2RelationStatus():
           #print(self.candidate_data)
           cov=self.covariance()
           self.checkStatus(cov)
+          self.direction_range(cov)
+          self.current_relation(self.Surce,self.Desi)
 
           # starttime = self.time_to_seconds()
           # self.OptimizeBlankRange(0)
@@ -377,22 +379,62 @@ class V2RelationStatus():
           return totalSum
 
 
-     def checkStatus(self,covariance):
-          self.LastRelation=self.CurentRelation
 
-          if covariance == 0:
-               self.CurentRelation.direction=com.ProcesStatus.conver
-          elif covariance < 0:
-               self.CurentRelation.direction=com.ProcesStatus.disver
+     def current_relation(self,surce,desi, covariance):
+          self.current_relation=Entity.CurentEntityRelation()
+          self.current_relation.uid=surce+desi
+          self.current_relation.source=surce
+          self.current_relation.destination=desi         
+          self.current_relation.direction=self.direction_range(covariance)
+          self.current_relation.status=com.ProcesStatus.Null
+          self.current_relation.config=com.ProcesStatus.Null
+          self.current_relation.start_time=com.ProcesStatus.Null
+          self.current_relation.end_time=com.ProcesStatus.Null
+          self.current_relation.value=com.SubjectItem.jsonify_value(Entity.SubjectItem(name="Covariance", value=covariance, type="float"))
+          self.current_relation.option=com.ProcesStatus.Null
+
+
+     def direction_range(self,covariance):
+          if covariance>0.5:
+               direction=Entity.RelationDirection.Convergent
+          if covariance<-0.5:
+               direction=Entity.RelationDirection.Divergent
           else:
-               self.CurentRelation.direction=com.ProcesStatus.inactive
-
-          if self.CurentRelation.direction==self.LastRelation.direction:
-               self.CurentRelation.EndTime=self.LastRelation.EndTime
-          else:
-               self.changeStatus(self,self.CurentRelation,self.LastRelation)
+               direction=Entity.RelationDirection.InActive
+          return direction
 
 
+     def check_status(self.current_relation.status, self.current_relation.direction):
+          pass 
+
+
+
+     # def checkStatus(self,covariance):
+     #      self.LastRelation=self.CurentRelation
+
+     #      if covariance == 0:
+     #           self.CurentRelation.direction=com.ProcesStatus.conver
+     #      elif covariance < 0:
+     #           self.CurentRelation.direction=com.ProcesStatus.disver
+     #      else:
+     #           self.CurentRelation.direction=com.ProcesStatus.inactive
+
+     #      if self.CurentRelation.direction==self.LastRelation.direction:
+     #           self.CurentRelation.EndTime=self.LastRelation.EndTime
+     #      else:
+     #           self.changeStatus(self,self.CurentRelation,self.LastRelation)
+
+     def state1():
+          pass
+     def state2():
+          pass
+     def state3():
+          pass
+     def state4():
+          pass
+
+
+     
      def checkLastRelationStatus():
           pass
      def changeStatus(self,CurentRelation,LastRelation):
