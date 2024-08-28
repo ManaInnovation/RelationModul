@@ -411,8 +411,6 @@ class V2RelationStatus():
           pass
         
 
-
-
 class V2RelationStatusV2(V2RelationStatus):
      def __init__(self,uid) -> None:
           self.uid = uid
