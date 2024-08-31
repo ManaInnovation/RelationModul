@@ -24,32 +24,35 @@ class CovarCnf:
 
 
 class CurentEntityRelation:
-      #   init
-        start_time : str = any
-        end_time : str = any
-        direction : str = any
-        status : str = com.ProcesStatus.Null
-        SubjectList : list = any
+      def __init__(self,start_time:str=com.Common_Time.Now(),end_time:str=com.Common_Time.Now(),
+                   direction: str = RelationDirection.InActive,status: str = com.ProcesStatus.Null,SubjectList:list=com.ProcesStatus.Null):
+        self.start_time = start_time
+        self.end_time =end_time
+        self.direction =direction
+        self.status =status
+        self.SubjectList =SubjectList
         
 
 
 class LastEntityRelation:
-        uid : str = any
-        source : str = any
-        destination : str = any
-        config : str = any
-        option : str = any
-        CurentRelation : CurentEntityRelation = any
-        LastRelation :list = any
-
+        def __init__(self,uid: str = any,source: str = any,destination: str = any,config: str = com.ProcesStatus.Null
+                     ,option: str = com.ProcesStatus.Null,CurentRelation: CurentEntityRelation = any, LastRelation:list = any):
+             
+            self.uid =uid
+            self.source =source
+            self.destination =destination
+            self.config =config
+            self.option =option
+            self.CurentRelation =CurentRelation
+            self.LastRelation =LastRelation
 
 
 class SubjectItem:
-      # init
-      '''create right init here'''
-      name: str = any
-      value: str = any
-      type: str = any
+      def __init__(self,name: str, value: str ,type: str):
+
+            self.name=name
+            self.value=value
+            self.type=type
       
 class TotalRelation:
     def __init__(self, uid, type, time, RelationNumber):

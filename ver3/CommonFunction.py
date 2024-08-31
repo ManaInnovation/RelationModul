@@ -39,7 +39,7 @@ class Common_UID():
 
 class Common_Time():
     def Now():
-        itime = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+        itime = datetime.now().replace(microsecond=0)
         return itime
     
     # def time_to_seconds(time_str):
