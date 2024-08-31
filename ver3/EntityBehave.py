@@ -95,18 +95,19 @@ class V2RelationBehave():
             return CurentRelation
     
 class V2RelationStatus():
-     def __init__(self, Surce, Desi) -> None:
+     def __init__(self, Surce, Desi,covarcnf:Entity.CovarCnf) -> None:
 
           self.Surce=SurceUID
           self.Desi=Desi
+          self.covarcnf=covarcnf
 
           self.uid = com.Common_UID.new(Surce+Desi)
           self.ibehave = V2RelationBehave()
-          self.CurentRelation = self.ibehave.Get(self.uid)
+          # self.CurentRelation = self.ibehave.Get(self.uid)
 
-          if self.CurentRelation == com.ProcesStatus.Null:
-               self.CurentRelation = self.ibehave.New(Surce,Desi)
-               self.CurentRelation = self.ibehave.Save(self.CurentRelation)
+          # if self.CurentRelation == com.ProcesStatus.Null:
+          #      self.CurentRelation = self.ibehave.New(Surce,Desi)
+          #      self.CurentRelation = self.ibehave.Save(self.CurentRelation)
           
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
@@ -118,6 +119,8 @@ class V2RelationStatus():
           #self.current_relation = None 
           self.last_entity_relation = Entity.LastEntityRelation()
           self.current_entity_relation=Entity.CurentEntityRelation()
+          
+          # self.last_entity_relation.LastRelation.append(self.current_entity_relation)
           
           self.IdealMinTime=15
           self.StartProcess()
@@ -139,7 +142,9 @@ class V2RelationStatus():
           self.CreateCandidateData(start_sec,now_sec)
           #print(self.candidate_data)
           cov=self.covariance()
-          self.direction_range(cov)
+         
+          # check 
+          self.direction_range(cov) 
           self.create_current_relation(self.Surce,self.Desi)
           self.check_status(self,cov)
 
@@ -386,7 +391,7 @@ class V2RelationStatus():
 
 
      def create_current_relation(self,surce,desi, covariance):
-
+          # ??
           self.last_entity_relation.LastRelation=self.current_entity_relation
           #self.current_relation=Entity.CurentEntityRelation()
           self.current_entity_relation.uid=surce+desi
@@ -397,27 +402,35 @@ class V2RelationStatus():
           self.current_entity_relation.config=com.ProcesStatus.Null
           self.current_entity_relation.start_time=com.ProcesStatus.Null
           self.current_entity_relation.end_time=com.ProcesStatus.Null
-          self.current_entity_relation.value=com.SubjectItem.jsonify_value(Entity.SubjectItem(name="Covariance", value=covariance, type="float"))
+         
+          #  Append to subject list
+          CovarianceItem = Entity.SubjectItem(name="Covariance", value=covariance, type="float")
+          self.current_entity_relation.SubjectList.append(CovarianceItem)
+
           self.current_entity_relation.option=com.ProcesStatus.Null
 
           self.last_entity_relation.CurentRelation=self.current_entity_relation
           #self.last_entity_relation.LastRelation=self.current_relation
 
      def direction_range(self,covariance):
-          if covariance>0.5:
+          # create Entity for parameter
+          if covariance> self.covarcnf.Convergent:
                return Entity.RelationDirection.Convergent
-          if covariance<-0.5:
+          if covariance<-self.covarcnf.Divergent:
                return Entity.RelationDirection.Divergent
           else:
                return Entity.RelationDirection.InActive
 
      def check_status(self,cov):
-          if self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.null and \
-               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
-                    self.state1(cov)
+          # cov to global var
+          if self.last_entity_relation.CurentRelation.direction ==Entity.RelationDirection.InActive and \
+               self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
+                    self.state1()
+
           elif self.last_entity_relation.LastRelation.status==Entity.RelationStatus.Pasive and \
           self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
                     self.state2(cov)
+
           elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
                self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
                     self.state3(cov)
@@ -431,20 +444,25 @@ class V2RelationStatus():
 
 
 
-     def state1(self,cov):
-          if self.last_entity_relation.LastRelation.status==Entity.RelationStatus.null and \
-               self.current_entity_relation.status!=Entity.RelationStatus.null:
-                    self.current_entity_relation.status=Entity.RelationStatus.Active 
+     def state1(self):
 
-                    if cov<=-0.5:
-                         self.current_entity_relation.direction = Entity.RelationDirection.Divergent
-                    elif cov>=0.5:
-                         self.current_entity_relation.direction = Entity.RelationDirection.Convergent
+          # if self.last_entity_relation.LastRelation.status==Entity.RelationStatus.null and \
+          #      self.current_entity_relation.status!=Entity.RelationStatus.null:
+          #           self.current_entity_relation.status=Entity.RelationStatus.Active 
 
-                    else:
-                         self.current_entity_relation.direction = Entity.RelationDirection.InActive
-          else: 
-               self.current_entity_relation.status=Entity.RelationStatus.null        
+          #           # if cov<=-0.5:
+          #           #      self.current_entity_relation.direction = Entity.RelationDirection.Divergent
+          #           # elif cov>=0.5:
+          #           #      self.current_entity_relation.direction = Entity.RelationDirection.Convergent
+
+          #           # else:
+          #           #      self.current_entity_relation.direction = Entity.RelationDirection.InActive
+          # else: 
+          #      self.current_entity_relation.status=Entity.RelationStatus.null        
+
+          if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
+               self.current_entity_relation.status = Entity.RelationStatus.Active 
+               
                
      def state2(self,cov):
 
@@ -455,7 +473,8 @@ class V2RelationStatus():
      def state4():
           pass
 
-
+     def update1():
+          pass
      
      def checkLastRelationStatus():
           pass
