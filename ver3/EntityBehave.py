@@ -405,18 +405,29 @@ class V2RelationStatus():
 
      def direction_range(self,covariance):
           if covariance>0.5:
-               direction=Entity.RelationDirection.Convergent
+               return Entity.RelationDirection.Convergent
           if covariance<-0.5:
-               direction=Entity.RelationDirection.Divergent
+               return Entity.RelationDirection.Divergent
           else:
-               direction=Entity.RelationDirection.InActive
-          return direction
-
+               return Entity.RelationDirection.InActive
 
      def check_status(self,cov):
           if self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.null and \
                self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
                     self.state1(cov)
+          elif self.last_entity_relation.LastRelation.status==Entity.RelationStatus.Pasive and \
+          self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
+                    self.state2(cov)
+          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
+               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
+                    self.state3(cov)
+
+          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
+               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Convergent:
+                    self.state3(cov)
+          
+          
+          
 
 
 
@@ -425,20 +436,21 @@ class V2RelationStatus():
                self.current_entity_relation.status!=Entity.RelationStatus.null:
                     self.current_entity_relation.status=Entity.RelationStatus.Active 
 
-                    if cov<=0.5:
+                    if cov<=-0.5:
                          self.current_entity_relation.direction = Entity.RelationDirection.Divergent
                     elif cov>=0.5:
                          self.current_entity_relation.direction = Entity.RelationDirection.Convergent
 
                     else:
                          self.current_entity_relation.direction = Entity.RelationDirection.InActive
-          elif self.current_entity_relation.status!=Entity.RelationStatus.null: 
+          else: 
                self.current_entity_relation.status=Entity.RelationStatus.null        
                
+     def state2(self,cov):
+
           pass
-     def state2():
-          pass
-     def state3():
+     def state3(self,cov):
+
           pass
      def state4():
           pass
