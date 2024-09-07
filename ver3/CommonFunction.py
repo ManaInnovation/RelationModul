@@ -11,9 +11,7 @@ class ProcesStatus():
     eval_false_data="The date of data is past"
     not_accepted_format="Unexpected data format"
     data_is_Null="data is null"
-    passive='passive'
-    active='active'
-    none='none'
+    none='None'
 
     conver='convergent'
     disver='disvergent'

@@ -97,7 +97,7 @@ class V2RelationBehave():
 class V2RelationStatus():
      def __init__(self, Surce, Desi,covarcnf:Entity.CovarCnf) -> None:
 
-          self.Surce=SurceUID
+          self.Surce=Surce
           self.Desi=Desi
           self.covarcnf=covarcnf
 
@@ -129,7 +129,6 @@ class V2RelationStatus():
           self.combi1 = []
           self.combi2 = []
           
-
      def StartProcess(self):
           print("start process called")
           DataProperty1 = self.getData(self.Surce)
@@ -157,7 +156,7 @@ class V2RelationStatus():
           # self.StartProcess2(0)
           # self.StartProcess2(1)
 
-     
+
      def StartProcess2(self,index):
           tsom=0
           for i in range(0, len(self.combined_data)):
@@ -390,15 +389,20 @@ class V2RelationStatus():
 
 
 
-     def create_current_relation(self,surce,desi, covariance):
+     def create_current_relation(self):
           # ??
-          self.last_entity_relation.LastRelation=self.current_entity_relation
+
+          if self.last_entity_relation.CurentRelation[2]!=self.current_entity_relation[2]:
+               self.last_entity_relation.LastRelation=self.current_entity_relation
+          if 
           
-          self.current_entity_relation.uid=surce+desi
-          self.current_entity_relation.source=surce
-          self.current_entity_relation.destination=desi         
-          self.current_entity_relation.direction=self.direction_range()
-          self.current_entity_relation.status=com.ProcesStatus.Null
+          self.Surce=com.Common_UID.new(self.Surce)
+          self.Desi=com.Common_UID.new(self.Desi)
+          self.current_entity_relation[0]=self.Surce+self.Desi
+          self.LastEntityRelation.source[1]=self.Surce
+          self.LastEntityRelation.destination[2]=self.desi         
+          self.LastEntityRelation.direction=self.direction_range()
+          self.LastEntityRelation.status=com.ProcesStatus.Null
           #self.current_entity_relation.config=com.ProcesStatus.Null
           #self.current_entity_relation.start_time=com.ProcesStatus.Null
           #self.current_entity_relation.end_time=com.ProcesStatus.Null
@@ -496,6 +500,11 @@ class V2RelationStatus():
                self.update1()
 
      def update1():
+          #update time
+          #zakhire last
+          pass
+
+     def update2():
           pass
      
      def checkLastRelationStatus():

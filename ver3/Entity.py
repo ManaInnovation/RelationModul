@@ -25,18 +25,19 @@ class CovarCnf:
 
 class CurentEntityRelation:
       def __init__(self,start_time:str=com.Common_Time.Now(),end_time:str=com.Common_Time.Now(),
-                   direction: str = RelationDirection.InActive,status: str = com.ProcesStatus.Null,SubjectList:list=com.ProcesStatus.Null):
+                   direction: str = RelationDirection.InActive,status: str = RelationStatus.null,SubjectList:list=com.ProcesStatus.Null):
         self.start_time = start_time
         self.end_time =end_time
         self.direction =direction
         self.status =status
-        self.SubjectList =SubjectList
+        self.SubjectList =SubjectList if SubjectList else []
         
 
 
 class LastEntityRelation:
-        def __init__(self,uid: str = any,source: str = any,destination: str = any,config: str = com.ProcesStatus.Null
-                     ,option: str = com.ProcesStatus.Null,CurentRelation: CurentEntityRelation = any, LastRelation:list = any):
+        def __init__(self,uid: str = com.ProcesStatus.none,source: str = com.ProcesStatus.none,destination: str = com.ProcesStatus.none,
+                     config: str = com.ProcesStatus.none,option: str = com.ProcesStatus.none ,
+                     CurentRelation: CurentEntityRelation = any, LastRelation:list = com.ProcesStatus.none):
              
             self.uid =uid
             self.source =source
