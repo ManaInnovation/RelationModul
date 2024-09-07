@@ -255,7 +255,7 @@ class V2RelationStatus():
 
      def create_current_relation(self):
           # ??
-          if self.last_entity_relation.CurentRelation.direction!=self.current_entity_relation.direction:
+          if self.last_entity_relation.CurentRelation.direction!=self.current_entity_relation.direction:  #????
                #self.last_entity_relation.LastRelation=self.current_entity_relation
                uid= com.Common_UID.new(self.Surce+self.Desi)
                # start_time = com.Common_Time.Now()
