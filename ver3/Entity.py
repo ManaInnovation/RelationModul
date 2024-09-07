@@ -29,8 +29,8 @@ class CurentEntityRelation:
         self.start_time = start_time
         self.end_time =end_time
         self.direction =direction
-        self.status =status
-        self.SubjectList =SubjectList if SubjectList else []
+        self.status = status
+        self.SubjectList = SubjectList if SubjectList else []
         
 
 

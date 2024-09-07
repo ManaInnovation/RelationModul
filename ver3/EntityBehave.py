@@ -156,7 +156,6 @@ class V2RelationStatus():
           # self.StartProcess2(0)
           # self.StartProcess2(1)
 
-
      def StartProcess2(self,index):
           tsom=0
           for i in range(0, len(self.combined_data)):
@@ -170,7 +169,6 @@ class V2RelationStatus():
 
           pass
           #if com.Common_Time.Now ==   
-
 
      def getData(self,uid):
           params = {"UID": uid,
@@ -192,7 +190,6 @@ class V2RelationStatus():
                print(f"Error parsing time string '{date_time_str}': {e}")
                return None
           
-     
      def setDataToArray(self, data1, data2):
 
           self.FillArray(data1,0)
@@ -210,139 +207,6 @@ class V2RelationStatus():
           for i in range(start, now):
                if self.combined_data[i][0]!=None and self.combined_data[i][1] != None:
                     self.candidate_data.append([self.combined_data[i][0], self.combined_data[i][1], i])
-
-     def FindBlankRange(self,index):
-        CheckTrigger = False
-        stop=False
-        last_full=None
-        first_full = None
-        first_blank = None
-        last_blank = None
-        finalDataBlock=86400
-        data_length = len(self.combined_data)
-        Blanks=[]
-        full=[]
-        Count_blanks=[]
-        count=0
-        for i in range(0,data_length):
-            if self.combined_data[i][index] is not None:
-                    if CheckTrigger==False:
-                        first_full=i
-                        CheckTrigger=True
-                        
-                        break
-                        
-        for j in range(first_full, data_length):
-            if self.combined_data[j][index] is None:
-                Blanks.append(j)
-                count= len(Blanks)
-        
-        for z in range(first_full,data_length):
-            if self.combined_data[z][index] is not None:
-                full.append(z)
-                last_full=full[-1]
-                
-        if count>0:
-            n=0
-            while(n <= count-1):
-                k=n
-                while( k<=count-1 and (Blanks[k]+1) in Blanks):
-                    k=k+1
-
-
-
-                if k <= count-1: 
-               
-                    next_index = Blanks[k] + 1
-                    prev_index = Blanks[n] - 1
-                    if next_index <= last_full and prev_index >= 0 :
-                        delta=(self.combined_data[Blanks[k]+1][index] - self.combined_data[Blanks[n]-1][index])/ ((Blanks[k]+1) - (Blanks[n]-1))
-                        stop=False
-                    else:
-                        stop=True
-                        
-                   
-                    #if prev_index <= last_full-1 and prev_index >= 0 :
-                    if stop==False:
-                        while n<=k:
-                                self.combined_data[Blanks[n]][index]= self.combined_data[Blanks[n]-1][index]+delta
-                                n=n+1
-                               
-                    else:
-                        break
-                        
-
-
-     def FindBlankRangeversion2(self,index):
-        CheckTrigger = False
-        first_blank = None
-        last_blank = None
-        finalDataBlock=86400
-
-        data_length = len(self.combined_data)
-        i=0
-          
-        
-        while(i<data_length):
-            if self.combined_data[i][index] is not None:
-                    if CheckTrigger==False:
-                        first_full=i
-                        CheckTrigger=True
-
-                     
-            if CheckTrigger==True:
-                if self.combined_data[i][index] is None:
-                    first_blank=i
-               
-                    for j in range(first_blank,data_length ):
-                        if self.combined_data[j][index] is None:
-                            last_blank=j
-                            IsNone=True
-                            
-                        else:
-                            if IsNone==True:
-                                self.GapFiller(first_blank ,last_blank ,index)
-                                IsNone=False
-                                i=j-1
-                                break
-                     
-            i+=1
-                                    
-     
-     def OptimizeBlankRange(self, index):
-        CheckTrigger = False
-        first_blank = None
-        data_length = len(self.combined_data)
-        i = 0
-
-
-        while i < data_length:
-            if self.combined_data[i][index] is not None:
-                if not CheckTrigger:
-                    CheckTrigger = True
-
-            if CheckTrigger and self.combined_data[i][index] is None:
-                first_blank = i
-                
-                while i < data_length and self.combined_data[i][index] is None:
-                    i += 1
-                
-                self.GapFiller(first_blank, i - 1, index)
-                    
-                continue
-
-            i += 1
-
-     def GapFiller(self,start,end,index):
-        delta=0
-        if end + 1 < len(self.combined_data):
-          BeforeBlank=self.combined_data[start-1][index]
-          AfterBlank=self.combined_data[end+1][index]
-          delta=(AfterBlank-BeforeBlank)/((end+1)-(start-1))
-          for k in range (start,end+1):
-               self.combined_data[k][index]=self.combined_data[k-1][index]+delta                      
-
-
 
      def createSyncTimeFrame(self):
           CurrentTime= com.Common_Time.Now()
@@ -391,38 +255,41 @@ class V2RelationStatus():
 
      def create_current_relation(self):
           # ??
-          if self.last_entity_relation.CurentRelation[2]!=self.current_entity_relation[2]:
-               self.last_entity_relation.LastRelation=self.current_entity_relation
-     
-          
-          uid= com.Common_UID.new(self.Surce+self.Desi)
-          start_time = com.Common_Time.Now()
-          end_time = com.Common_Time.Now()
-          self.current_entity_relation = Entity.CurentEntityRelation(
-            start_time=start_time,
-            end_time=end_time,
-            direction=self.direction_range(self.cov),
-            status=Entity.RelationStatus.null,
-            SubjectList=[]
-        )
+          if self.last_entity_relation.CurentRelation.direction!=self.current_entity_relation.direction:
+               #self.last_entity_relation.LastRelation=self.current_entity_relation
+               uid= com.Common_UID.new(self.Surce+self.Desi)
+               # start_time = com.Common_Time.Now()
+               # end_time = com.Common_Time.Now()
+
+               self.current_entity_relation = Entity.CurentEntityRelation(
+               start_time=com.Common_Time.Now(),
+               end_time=com.Common_Time.Now(),
+               direction=self.direction_range(self.cov),
+               status=Entity.RelationStatus.null,
+               SubjectList=[]
+               )
+               
+          else:
+               pass
+               #self.check_status()
+               #self.update1()
 
           # self.current_entity_relation[0]=self.Surce+self.Desi
           # self.LastEntityRelation.source[1]=self.Surce
           # self.LastEntityRelation.destination[2]=self.desi         
           # self.LastEntityRelation.direction=self.direction_range()
           # self.LastEntityRelation.status=com.ProcesStatus.Null
-         
-          #  Append to subject list
+          
           CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
           self.current_entity_relation.SubjectList.append(CovarianceItem)
 
-          if self.current_entity_relation.direction == self.last_entity_relation.CurentRelation.direction:
-            self.update1()
-          else:
-            self.update2()
+          # if self.current_entity_relation.direction == self.last_entity_relation.CurentRelation.direction:
+          #   self.update1()
+          # else:
+          #   self.update2()
 
 
-          self.last_entity_relation.CurentRelation=self.current_entity_relation
+          #self.last_entity_relation.CurentRelation=self.current_entity_relation
           #self.last_entity_relation.LastRelation=self.current_relation
 
 
@@ -436,24 +303,21 @@ class V2RelationStatus():
                return Entity.RelationDirection.InActive
 
      def check_status(self):
-          # cov to global var
-          if self.last_entity_relation.CurentRelation.direction ==Entity.RelationDirection.InActive and \
-               self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
+          if self.last_entity_relation.CurentRelation[2] ==Entity.RelationDirection.InActive and \
+               self.last_entity_relation.CurentRelation[3]==Entity.RelationStatus.null:
                     self.state1()
 
-          elif self.last_entity_relation.LastRelation.status==Entity.RelationStatus.Pasive and \
-          self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
+          elif self.last_entity_relation.LastRelation[3]==Entity.RelationStatus.Pasive and \
+          self.last_entity_relation.LastRelation[2]==Entity.RelationDirection.InActive:
                     self.state2()
 
-          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
-               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
+          elif self.last_entity_relation.LastRelation[3] ==Entity.RelationStatus.Active and \
+               self.last_entity_relation.LastRelation[2]==Entity.RelationDirection.Divergent:
                     self.state3()
 
-          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
-               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Convergent:
+          elif self.last_entity_relation.LastRelation[3] ==Entity.RelationStatus.Active and \
+               self.last_entity_relation.LastRelation[2]==Entity.RelationDirection.Convergent:
                     self.state4()
-          
-          
      def state1(self):
           # if self.last_entity_relation.LastRelation.status==Entity.RelationStatus.null and \
           #      self.current_entity_relation.status!=Entity.RelationStatus.null:
@@ -471,50 +335,67 @@ class V2RelationStatus():
 
           if self.current_entity_relation[2] == Entity.RelationDirection.Divergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state3()
                
           elif self.current_entity_relation[2] == Entity.RelationDirection.Convergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state4()
           else:
                self.update1()
-               
+               self.state1             
      def state2(self):
           if self.current_entity_relation[2] == Entity.RelationDirection.Divergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state3()
           elif self.current_entity_relation[2] == Entity.RelationDirection.Convergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state4()
           else:
                self.update1()
+               self.state2
 
      def state3(self):
           if self.current_entity_relation[2] == Entity.RelationDirection.Convergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state4()
           elif self.current_entity_relation[2] == Entity.RelationDirection.InActive:
                self.current_entity_relation[3] = Entity.RelationStatus.Pasive
+               self.update2()
                self.state2()
           else:
                self.update1()
+               self.state3()
 
      def state4(self):
           if self.current_entity_relation[2] == Entity.RelationDirection.Divergent:
                self.current_entity_relation[3] = Entity.RelationStatus.Active 
+               self.update2()
                self.state3()
           elif self.current_entity_relation[2] == Entity.RelationDirection.InActive:
                self.current_entity_relation[3] = Entity.RelationStatus.Pasive
+               self.update2()
                self.state2()
           else:
                self.update1()
+               self.state4
 
-     def update1():
+     def update1(self):
+          self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
+          #com.FileControl.SaveJson(self.last_entity_relation.CurentRelation)??????
           #update time
           #zakhire last
-          pass
 
-     def update2():
+     def update2(self,):
+          self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
+          self.last_entity_relation.CurentRelation=self.current_entity_relation
+          #com.FileControl.SaveJson(self.last_entity_relation.CurentRelation)??????
+          # last current to last last
+          #curent to curent last
           pass
      
      def checkLastRelationStatus():

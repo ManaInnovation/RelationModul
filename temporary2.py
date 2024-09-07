@@ -1,6 +1,8 @@
 import json
 import os
 from datetime import datetime
+import uuid
+
 
 class V2RelationStatus():
 
@@ -19,8 +21,9 @@ class V2RelationStatus():
     def StartProcess(self):
 
           #combined_data = [[None, None] for _ in range(86400)]
-        self.OptimizeBlankRange(0)
-        print(self.combined_data)
+        exe=self.new("example")
+        exe2=self.new("hello")
+        print(exe+exe2)
         #self.FindBlankRange(1)
         #print(datetime.now())
 
@@ -163,6 +166,11 @@ class V2RelationStatus():
         print(cov)
 
 
+    
+    def new(self, UID):
+
+         return str(uuid.uuid5(uuid.NAMESPACE_DNS, UID))
+              
 if __name__=="__main__":
     RelationStatus=V2RelationStatus()
     #test=RelationStatus.StartProcess()
