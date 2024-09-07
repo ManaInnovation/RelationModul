@@ -391,30 +391,40 @@ class V2RelationStatus():
 
      def create_current_relation(self):
           # ??
-
           if self.last_entity_relation.CurentRelation[2]!=self.current_entity_relation[2]:
                self.last_entity_relation.LastRelation=self.current_entity_relation
-          if 
+     
           
-          self.Surce=com.Common_UID.new(self.Surce)
-          self.Desi=com.Common_UID.new(self.Desi)
-          self.current_entity_relation[0]=self.Surce+self.Desi
-          self.LastEntityRelation.source[1]=self.Surce
-          self.LastEntityRelation.destination[2]=self.desi         
-          self.LastEntityRelation.direction=self.direction_range()
-          self.LastEntityRelation.status=com.ProcesStatus.Null
-          #self.current_entity_relation.config=com.ProcesStatus.Null
-          #self.current_entity_relation.start_time=com.ProcesStatus.Null
-          #self.current_entity_relation.end_time=com.ProcesStatus.Null
+          uid= com.Common_UID.new(self.Surce+self.Desi)
+          start_time = com.Common_Time.Now()
+          end_time = com.Common_Time.Now()
+          self.current_entity_relation = Entity.CurentEntityRelation(
+            start_time=start_time,
+            end_time=end_time,
+            direction=self.direction_range(self.cov),
+            status=Entity.RelationStatus.null,
+            SubjectList=[]
+        )
+
+          # self.current_entity_relation[0]=self.Surce+self.Desi
+          # self.LastEntityRelation.source[1]=self.Surce
+          # self.LastEntityRelation.destination[2]=self.desi         
+          # self.LastEntityRelation.direction=self.direction_range()
+          # self.LastEntityRelation.status=com.ProcesStatus.Null
          
           #  Append to subject list
           CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
           self.current_entity_relation.SubjectList.append(CovarianceItem)
 
-          #self.current_entity_relation.option=com.ProcesStatus.Null
+          if self.current_entity_relation.direction == self.last_entity_relation.CurentRelation.direction:
+            self.update1()
+          else:
+            self.update2()
+
 
           self.last_entity_relation.CurentRelation=self.current_entity_relation
           #self.last_entity_relation.LastRelation=self.current_relation
+
 
      def direction_range(self):
           # create Entity for parameter
