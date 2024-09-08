@@ -20,7 +20,7 @@ class CovarCnf:
       Divergent :float =-0.5
 
       def __init__(self) -> None:
-            assert self.Convergent < self.Divergent
+            assert self.Convergent > self.Divergent
 
 
 class CurentEntityRelation:
