@@ -165,7 +165,7 @@ class V2RelationStatus():
           #print(start_sec,now_sec)
           self.CreateCandidateData(start_sec,now_sec)
           print(self.candidate_data)
-          cov=self.covariancever1()
+          cov=self.covariance()
           self.cov=cov
           # check 
           self.direction_range() 
@@ -309,6 +309,7 @@ class V2RelationStatus():
      def create_current_relation(self):
           # ??
           """create or update the curent relation"""
+
           if self.last_entity_relation is None:
             # If there is no previous relation, create a null relation
             uid = com.Common_UID.new(self.Surce + self.Desi)
@@ -329,30 +330,26 @@ class V2RelationStatus():
                 CurentRelation=self.current_entity_relation,
                 LastRelation=[]
             )
-            print(type(self.last_entity_relation.CurentRelation))
-            print(type(self.current_entity_relation))
-            print(self.last_entity_relation.CurentRelation.direction)
-            print(self.current_entity_relation.direction)
-
-
           else:
-               if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
-                    self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
-                    self.current_entity_relation=Entity.CurentEntityRelation(
-                         start_time=com.Common_Time.Now(),
-                         end_time=com.Common_Time.Now(),
-                         direction=self.direction_range(self.cov),  
-                         status=Entity.RelationStatus.null,
-                         SubjectList=[]
-                    )
-                    CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
-                    self.current_entity_relation.SubjectList.append(CovarianceItem)
-                    self.last_entity_relation.CurentRelation = self.current_entity_relation
-                    
-               #else:
+               while self.last_entity_relation.CurentRelation:
+                    if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
+                         self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
+                         self.current_entity_relation=Entity.CurentEntityRelation(
+                              start_time=com.Common_Time.Now(),
+                              end_time=com.Common_Time.Now(),
+                              direction=self.direction_range(self.cov),  
+                              status=Entity.RelationStatus.null,
+                              SubjectList=[]
+                         )
+                         CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
+                         self.current_entity_relation.SubjectList.append(CovarianceItem)
+                         self.last_entity_relation.CurentRelation = self.current_entity_relation
+                         
+                    #else:
+               
                     
           self.check_status()
-          self.Save(self.current_entity_relation)
+          #self.Save(self.current_entity_relation)
 
      def direction_range(self):
           # create Entity for parameter
