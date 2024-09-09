@@ -165,7 +165,7 @@ class V2RelationStatus():
           #print(start_sec,now_sec)
           self.CreateCandidateData(start_sec,now_sec)
           print(self.candidate_data)
-          cov=self.covariance()
+          cov=self.covariancever1()
           self.cov=cov
           # check 
           self.direction_range() 
@@ -446,7 +446,7 @@ class V2RelationStatus():
           #update time
           #zakhire last
 
-     def update2(self,):
+     def update2(self):
           self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
           self.last_entity_relation.CurentRelation=self.current_entity_relation
           self.Save(self.last_entity_relation.CurentRelation)
@@ -455,12 +455,39 @@ class V2RelationStatus():
           
      
 
+     def default_serializer(self,obj):
+          """Custom serializer for datetime objects."""
+          if isinstance(obj, datetime):
+               return obj.isoformat()
+          raise TypeError(f"Type {type(obj)} not serializable")
+     
+
      def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
-            with open(os.path.join(path,CurentRelation.uid+'.json'), 'w') as file:
-               json.dump(CurentRelation.__dict__, file)
+            if not os.path.exists(path):
+               os.makedirs(path)
+            filename = com.Common_UID.new(self.Surce + self.Desi) + '.json'
+            with open(os.path.join(path,filename), 'w') as file:
+               json.dump(CurentRelation.__dict__, file, default=self.default_serializer)
         
             return CurentRelation
      
+     def custom_parser(self,dct):
+          for key, value in dct.items():
+               if isinstance(value, str):
+                    try:
+                         # Try to parse the string into a datetime object
+                         dct[key] = parser.isoparse(value)
+                    except (ValueError, parser.ParserError):
+                         # If parsing fails, leave the value as is
+                         pass
+          return dct
+
+     def load_json_with_dates(self,file_path):
+          with open(file_path, 'r') as file:
+               data = json.load(file, object_hook=self.custom_parser)  # Use the custom parser
+          return data
+
+
      def checkLastRelationStatus():
           pass
      def changeStatus(self,CurentRelation,LastRelation):
