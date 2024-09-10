@@ -370,22 +370,21 @@ class V2RelationStatus():
           print(self.last_entity_relation.LastRelation)
           for relation in self.last_entity_relation.LastRelation:
                #print(relation.status)
-               if relation.status ==Entity.RelationDirection.InActive and \
+               if relation.direction ==Entity.RelationDirection.InActive and \
                     self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
                          self.state1()
 
 
-               
-               elif relation.status==Entity.RelationStatus.Pasive and \
-                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
+               elif relation.direction==Entity.RelationDirection.InActive and \
+                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Pasive:
                          self.state2()
 
-               elif relation.status ==Entity.RelationStatus.Active and \
-                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
+               elif relation.direction ==Entity.RelationDirection.Divergent and \
+                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                          self.state3()
 
-               elif relation.status ==Entity.RelationStatus.Active and \
-                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Convergent:
+               elif relation.direction ==Entity.RelationDirection.Convergent and \
+                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                          self.state4()
                     
      def state1(self):     
@@ -458,6 +457,7 @@ class V2RelationStatus():
           self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
           self.last_entity_relation.CurentRelation=self.current_entity_relation
           self.Save(self.last_entity_relation.CurentRelation)
+          self.Save(self.last_entity_relation.CurentRelation)
           # last current to last last
           #curent to curent last
           
@@ -465,7 +465,24 @@ class V2RelationStatus():
           """Custom serializer for datetime objects."""
           if isinstance(obj, datetime):
                return obj.isoformat()
-          raise TypeError(f"Type {type(obj)} not serializable")
+          elif isinstance(obj, Entity.CurentEntityRelation):
+        # Convert the custom object to a dictionary
+               return {
+                    'start_time': obj.start_time.isoformat() if isinstance(obj.start_time, datetime) else obj.start_time,
+                    'end_time': obj.end_time.isoformat() if isinstance(obj.end_time, datetime) else obj.end_time,
+                    'direction': obj.direction,  # Assuming this is a serializable attribute
+                    'status': obj.status,        # Assuming this is a serializable attribute
+                    'SubjectList': [self.default_serializer(item) for item in obj.SubjectList]   # Assuming this is serializable
+               }
+          elif isinstance(obj, Entity.SubjectItem):
+        # Convert SubjectItem to a dictionary
+               return {
+                    'name': obj.name,
+                    'value': obj.value,
+                    'type': obj.type
+               }
+          else:
+               raise TypeError(f"Type {type(obj)} not serializable")
      
 
      def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
@@ -473,7 +490,7 @@ class V2RelationStatus():
                os.makedirs(path)
             filename = com.Common_UID.new(self.Surce + self.Desi) + '.json'
             with open(os.path.join(path,filename), 'w') as file:
-               json.dump(CurentRelation.__dict__, file, default=self.default_serializer)
+               json.dump(CurentRelation.__dict__, file, default=self.default_serializer,indent=4)
         
             return CurentRelation
      
