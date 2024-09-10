@@ -4,6 +4,7 @@ from datetime import datetime
 import CommonFunction as com
 import math
 import Entity
+import copy
 from dateutil import parser
 
 
@@ -328,15 +329,17 @@ class V2RelationStatus():
                          uid=uid,
                          source=self.Surce,
                          destination=self.Desi,
-                         CurentRelation=self.current_entity_relation,
+                         CurentRelation=copy.deepcopy(self.current_entity_relation),
                          LastRelation=[]
                     )
                #self.Save(se)
                else:
+                    new_current_relation = copy.deepcopy(self.current_entity_relation)
+                    new_current_relation.direction = self.direction_range()
                #while self.last_entity_relation.CurentRelation:
                     self.current_entity_relation.direction=self.direction_range()
-                    if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
-                         self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
+                    if self.last_entity_relation.CurentRelation.direction!= new_current_relation.direction:
+                         self.last_entity_relation.LastRelation.append(copy.deepcopy(self.last_entity_relation.CurentRelation))
                          self.current_entity_relation=Entity.CurentEntityRelation(
                               start_time=com.Common_Time.Now(),
                               end_time=com.Common_Time.Now(),
@@ -346,7 +349,7 @@ class V2RelationStatus():
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
-                         self.last_entity_relation.CurentRelation = self.current_entity_relation
+                         self.last_entity_relation.CurentRelation = copy.deepcopy(new_current_relation)
                          self.check_status()
                          break
                     
@@ -363,21 +366,27 @@ class V2RelationStatus():
                return Entity.RelationDirection.InActive
 
      def check_status(self):
-          if self.last_entity_relation.CurentRelation.direction ==Entity.RelationDirection.InActive and \
-               self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
-                    self.state1()
 
-          elif self.last_entity_relation.LastRelation.status==Entity.RelationStatus.Pasive and \
-          self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
-                    self.state2()
+          print(self.last_entity_relation.LastRelation)
+          for relation in self.last_entity_relation.LastRelation:
+               #print(relation.status)
+               if relation.status ==Entity.RelationDirection.InActive and \
+                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
+                         self.state1()
 
-          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
-               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
-                    self.state3()
 
-          elif self.last_entity_relation.LastRelation.status ==Entity.RelationStatus.Active and \
-               self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Convergent:
-                    self.state4()
+               
+               elif relation.status==Entity.RelationStatus.Pasive and \
+                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive:
+                         self.state2()
+
+               elif relation.status ==Entity.RelationStatus.Active and \
+                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Divergent:
+                         self.state3()
+
+               elif relation.status ==Entity.RelationStatus.Active and \
+                    self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.Convergent:
+                         self.state4()
                     
      def state1(self):     
           if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:

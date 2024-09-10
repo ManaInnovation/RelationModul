@@ -31,6 +31,11 @@ class CurentEntityRelation:
         self.direction =direction
         self.status = status
         self.SubjectList = SubjectList if SubjectList else []
+
+      def __repr__(self):
+        return (f"CurentEntityRelation(start_time={self.start_time}, "
+                f"end_time={self.end_time}, direction={self.direction}, "
+                f"status={self.status}, SubjectList={self.SubjectList})")
         
 
 
@@ -45,7 +50,7 @@ class LastEntityRelation:
             self.config =config
             self.option =option
             self.CurentRelation =CurentRelation
-            self.LastRelation =LastRelation
+            self.LastRelation =LastRelation if LastRelation is not None else []
 
 
 class SubjectItem:
