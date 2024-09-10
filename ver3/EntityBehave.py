@@ -168,7 +168,7 @@ class V2RelationStatus():
           cov=self.covariance()
           self.cov=cov
           # check 
-          self.direction_range() 
+          #self.direction_range() 
           self.create_current_relation()
           self.check_status()
 
@@ -310,46 +310,48 @@ class V2RelationStatus():
           # ??
           """create or update the curent relation"""
 
-          if self.last_entity_relation is None:
-            # If there is no previous relation, create a null relation
-            uid = com.Common_UID.new(self.Surce + self.Desi)
-            start_time = com.Common_Time.Now()
-            self.current_entity_relation = Entity.CurentEntityRelation(
-                start_time=start_time,
-                end_time=start_time,
-                direction=Entity.RelationDirection.InActive,
-                status=Entity.RelationStatus.null,
-                SubjectList=[]
-            )
-            # Initialize a new LastEntityRelation with the null relation 
-            
-            self.last_entity_relation = Entity.LastEntityRelation(
-                uid=uid,
-                source=self.Surce,
-                destination=self.Desi,
-                CurentRelation=self.current_entity_relation,
-                LastRelation=[]
-            )
-          else:
-               while self.last_entity_relation.CurentRelation:
+          while(True):
+               if self.last_entity_relation is None:
+               # If there is no previous relation, create a null relation
+                    uid = com.Common_UID.new(self.Surce + self.Desi)
+                    start_time = com.Common_Time.Now()
+                    self.current_entity_relation = Entity.CurentEntityRelation(
+                         start_time=start_time,
+                         end_time=start_time,
+                         direction=Entity.RelationDirection.InActive,
+                         status=Entity.RelationStatus.null,
+                         SubjectList=[]
+                    )
+               # Initialize a new LastEntityRelation with the null relation 
+               
+                    self.last_entity_relation = Entity.LastEntityRelation(
+                         uid=uid,
+                         source=self.Surce,
+                         destination=self.Desi,
+                         CurentRelation=self.current_entity_relation,
+                         LastRelation=[]
+                    )
+               #self.Save(se)
+               else:
+               #while self.last_entity_relation.CurentRelation:
+                    self.current_entity_relation.direction=self.direction_range()
                     if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
                          self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
                          self.current_entity_relation=Entity.CurentEntityRelation(
                               start_time=com.Common_Time.Now(),
                               end_time=com.Common_Time.Now(),
-                              direction=self.direction_range(self.cov),  
+                              direction=self.direction_range(),  
                               status=Entity.RelationStatus.null,
                               SubjectList=[]
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
                          self.last_entity_relation.CurentRelation = self.current_entity_relation
-                         
-                    #else:
-               
+                         self.check_status()
+                         break
                     
-          self.check_status()
-          #self.Save(self.current_entity_relation)
+               #else:                  
+          self.Save(self.last_entity_relation)
 
      def direction_range(self):
           # create Entity for parameter
@@ -450,8 +452,6 @@ class V2RelationStatus():
           # last current to last last
           #curent to curent last
           
-     
-
      def default_serializer(self,obj):
           """Custom serializer for datetime objects."""
           if isinstance(obj, datetime):
