@@ -32,11 +32,19 @@ class CurentEntityRelation:
         self.status = status
         self.SubjectList = SubjectList if SubjectList else []
 
-      def __repr__(self):
-        return (f"CurentEntityRelation(start_time={self.start_time}, "
-                f"end_time={self.end_time}, direction={self.direction}, "
-                f"status={self.status}, SubjectList={self.SubjectList})")
-        
+
+      def to_dict(self):
+         return {
+            "start_time": self.start_time,
+            "end_time": self.end_time,
+            "direction": self.direction,
+            "status": self.status,
+            "SubjectList": self.SubjectList
+        }
+
+      @classmethod
+      def from_dict(cls, data):
+        return cls(**data)
 
 
 class LastEntityRelation:
@@ -51,6 +59,35 @@ class LastEntityRelation:
             self.option =option
             self.CurentRelation =CurentRelation
             self.LastRelation =LastRelation if LastRelation is not None else []
+
+        def to_dict(self):
+        # Convert nested CurentRelation and LastRelation
+                  return {
+            "uid": self.uid,
+            "source": self.source,
+            "destination": self.destination,
+            "CurentRelation": self.CurentRelation.to_dict(),  # Call to_dict on the nested CurentEntityRelation
+            # Check if the LastRelation contains dict objects or objects that need to be converted to dict
+            "LastRelation": [
+                relation.to_dict() if hasattr(relation, 'to_dict') else relation
+                for relation in self.LastRelation
+            ]
+        }
+
+        @classmethod
+        def from_dict(cls, data):
+        # Rebuild nested CurentRelation and LastRelation
+            curent_relation = CurentEntityRelation.from_dict(data['CurentRelation'])
+            last_relations = [CurentEntityRelation.from_dict(rel) for rel in data.get('LastRelation', [])]
+            return cls(
+                  uid=data['uid'],
+                  source=data['source'],
+                  destination=data['destination'],
+                  config=data.get('config', 'none'),
+                  option=data.get('option', 'none'),
+                  CurentRelation=curent_relation,
+                  LastRelation=last_relations
+            )
 
 
 class SubjectItem:

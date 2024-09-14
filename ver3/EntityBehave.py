@@ -11,34 +11,28 @@ from dateutil import parser
 
 class V2RelationBehave():
     def New(self,Surce,Desi):
-        
-        """
-        uid = com.Common_UID.new(Surce + Desi)
-        start_time = com.Common_Time.Now()
-        null_relation = Entity.CurentEntityRelation(
-            start_time=start_time,
-            end_time=start_time,
-            direction=Entity.RelationDirection.InActive,
-            status=Entity.RelationStatus.null,
-            SubjectList=[]
-        )
-        # Initialize a new LastEntityRelation with the null relation
-        self.last_entity_relation = Entity.LastEntityRelation(  #  for this we shoulld did one of 3 solution
-            uid=uid,
-            source=Surce,
-            destination=Desi,
-            CurentRelation=null_relation
-        )
-        self.Save(null_relation)  # Save the new relation to storage
-        return null_relation
-        """
-    
+          if(self.Get(Surce,Desi)==com.ProcesStatus.Null):
+               new_relation = Entity.CurentEntityRelation(
+                    start_time=com.Common_Time.Now(),  
+                    end_time=com.Common_Time.Now(),    
+                    direction=Entity.RelationDirection.InActive,
+                    status=Entity.RelationStatus.null,  
+                    SubjectList=[]  
+               )
+               self.last_entity_relation = Entity.LastEntityRelation(
+                              uid=com.Common_UID.new(Surce + Desi),
+                              source=Surce,
+                              destination=Desi,
+                              CurentRelation=new_relation,
+                              
+                         )
+               self.Save(self.last_entity_relation )
+               
+          else:
+                new_relation=com.ProcesStatus.Null
+          
+          return new_relation
 
-     #    new_relation = Entity.CurentEntityRelation(uid, Surce, Desi, Entity.RelationDirection.InActive, com.ProcesStatus.Default, 
-     #                                         start_time, start_time, Entity.RelationStatus.null, com.ProcesStatus.Null, 
-     #                                         com.ProcesStatus.Default)
-        #self.Save(new_relation)
-        #return new_relation
 
     def Update(self,CurentRelation):
           #def active(none, passive):
@@ -98,23 +92,27 @@ class V2RelationBehave():
           #       "EndTime": CurentRelation.EndTime
           #   })
               
-    def Get(self, UID , path='D:/EachEntityRelation'):
+    def Get(self, Surce, Desi, path='D:/EachEntityRelation3'):
+         uid = com.Common_UID.new(Surce + Desi)
+         file_name = os.path.join(path, uid + '.json')
          try:
-            with open(os.path.join(path,UID+'.json'), 'r') as file:
-                    CurentRelation = json.load(file)
+               with open(file_name, 'r') as file:
+                         data = json.load(file)
+               CurentRelation = self.LastEntityRelation.from_dict(data)
+               return CurentRelation
          except:
-              CurentRelation = com.ProcesStatus.Null
+               CurentRelation = com.ProcesStatus.Null
             
          return CurentRelation
 
     def Remove(self,UID):
         pass
 
-    def Save(self, CurentRelation , path='D:/EachEntityRelation'):
-            with open(os.path.join(path,CurentRelation.uid+'.json'), 'w') as file:
-               json.dump(CurentRelation.__dict__, file)
+    def Save(self, entity_relation , path='D:/EachEntityRelation3'):
+            with open(os.path.join(path,entity_relation.uid+'.json'), 'w') as file:
+               json.dump(entity_relation.to_dict(), file,default=str)
         
-            return CurentRelation
+            return entity_relation
     
 class V2RelationStatus():
      def __init__(self, Surce, Desi,covarcnf:Entity.CovarCnf) -> None:
@@ -125,13 +123,10 @@ class V2RelationStatus():
 
           # self.uid = com.Common_UID.new(Surce+Desi)
           # self.ibehave = V2RelationBehave()
-
           # self.CurentRelation = self.ibehave.Get(self.uid)
-
           # if self.CurentRelation == com.ProcesStatus.Null:
           #      self.CurentRelation = self.ibehave.New(Surce,Desi)
           #      self.CurentRelation = self.ibehave.Save(self.CurentRelation)
-          
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
           self.combined_data = [[None, None] for _ in range(86400)]
@@ -139,22 +134,17 @@ class V2RelationStatus():
           self.syncdata=[]
 
           self.last_relation = None  
-          #self.current_relation = None 
-          # self.last_entity_relation = Entity.LastEntityRelation()
-          # self.current_entity_relation=Entity.CurentEntityRelation()
 
-          self.last_entity_relation=None
-          self.current_entity_relation=None
-          
 
-          # self.last_entity_relation.LastRelation.append(self.current_entity_relation)
-          
+          self.MyBehave=V2RelationBehave()
+          self.current_entity_relation=self.MyBehave.New(self.Surce,self.Desi)
+          #self.current_entity_relation=self.MyBehave.Save(self.current_entity_relation)
+          self.last_entity_relation=self.MyBehave.Get(self.Surce, self.Desi)
+              
           self.IdealMinTime=15
           self.StartProcess()
           #self.StartProcess2()
           
-          self.combi1 = []
-          self.combi2 = []
           
      def StartProcess(self):
           print("start process called")
@@ -162,27 +152,15 @@ class V2RelationStatus():
           DataProperty2 = self.getData(self.Desi)
 
           self.setDataToArray(DataProperty1,DataProperty2)
-         
-          #print(self.combined_data)
+     
           start_sec,now_sec=self.createSyncTimeFrame()
-          #print(start_sec,now_sec)
           self.CreateCandidateData(start_sec,now_sec)
           print(self.candidate_data)
           cov=self.covariance()
           self.cov=cov
-          # check 
-          #self.direction_range() 
-          self.create_current_relation()
+          self.MyBehave.New(self.Surce,self.Desi)
+          pr=self.MyBehave.Get(self.Surce,self.Desi)
           self.check_status()
-
-          # starttime = self.time_to_seconds()
-          # self.OptimizeBlankRange(0)
-          # self.OptimizeBlankRange(1)
-          # endtime = self.time_to_seconds()
-          # print("endtime-starttime:",endtime-starttime)
-          # com.FileControl.SaveJson("D:/JsonData/tests/data1","data5.json", self.combined_data)
-          # self.StartProcess2(0)
-          # self.StartProcess2(1)
 
      def StartProcess2(self,index):
           tsom=0
@@ -192,11 +170,7 @@ class V2RelationStatus():
           print(tsom)
 
      def CheckData(PropOption):
-          #if com.Common_Time.Now == PropOption.ut:
-
-
-          pass
-          #if com.Common_Time.Now ==   
+          pass  
 
      def getData(self,uid):
           params = {"UID": uid,
@@ -307,35 +281,33 @@ class V2RelationStatus():
           return totalSum
 
      def create_current_relation(self):
-          # ??
-          """create or update the curent relation"""
-
-          while(True):
-               if self.last_entity_relation is None:
+               
+               if self.last_entity_relation == com.ProcesStatus.Null:
+                    self.MyBehave.New(self.Surce,self.Desi)
                # If there is no previous relation, create a null relation
-                    uid = com.Common_UID.new(self.Surce + self.Desi)
-                    start_time = com.Common_Time.Now()
-                    self.current_entity_relation = Entity.CurentEntityRelation(
-                         start_time=start_time,
-                         end_time=start_time,
-                         direction=Entity.RelationDirection.InActive,
-                         status=Entity.RelationStatus.null,
-                         SubjectList=[]
-                    )
+                    # uid = com.Common_UID.new(self.Surce + self.Desi)
+                    # start_time = com.Common_Time.Now()
+                    # self.current_entity_relation = Entity.CurentEntityRelation(
+                    #      start_time=start_time,
+                    #      end_time=start_time,
+                    #      direction=Entity.RelationDirection.InActive,
+                    #      status=Entity.RelationStatus.null,
+                    #      SubjectList=[]
+                    # )
                # Initialize a new LastEntityRelation with the null relation                
-                    self.last_entity_relation = Entity.LastEntityRelation(
-                         uid=uid,
-                         source=self.Surce,
-                         destination=self.Desi,
-                         CurentRelation=copy.deepcopy(self.current_entity_relation),
-                         LastRelation=[]
-                    )
+                    # self.last_entity_relation = Entity.LastEntityRelation(
+                    #      uid=uid,
+                    #      source=self.Surce,
+                    #      destination=self.Desi,
+                    #      CurentRelation=copy.deepcopy(self.current_entity_relation),
+                    #      LastRelation=[]
+                    # )
                #self.Save(se)
                else:
                     new_current_relation = copy.deepcopy(self.current_entity_relation)
                     new_current_relation.direction = self.direction_range()
                #while self.last_entity_relation.CurentRelation:
-                    self.current_entity_relation.direction=self.direction_range()
+                    #self.current_entity_relation.direction=self.direction_range()
                     if self.last_entity_relation.CurentRelation.direction!= new_current_relation.direction:
                          self.last_entity_relation.LastRelation.append(copy.deepcopy(self.last_entity_relation.CurentRelation))
                          self.current_entity_relation=Entity.CurentEntityRelation(
@@ -347,14 +319,11 @@ class V2RelationStatus():
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
-                         self.last_entity_relation.CurentRelation = copy.deepcopy(new_current_relation)
-                         self.check_status()
-                         break                    
+                         #self.last_entity_relation.CurentRelation = copy.deepcopy(new_current_relation)
+                         self.check_status()                                             
                #else:                  
-          self.Save(self.last_entity_relation)
-
+          #self.Save(self.last_entity_relation)
      def direction_range(self):
-          # create Entity for parameter
           if self.cov> self.covarcnf.Convergent:
                return Entity.RelationDirection.Convergent
           if self.cov<-self.covarcnf.Divergent:
@@ -363,24 +332,23 @@ class V2RelationStatus():
                return Entity.RelationDirection.InActive
 
      def check_status(self):
-
-          print(self.last_entity_relation.LastRelation)
-          for relation in self.last_entity_relation.LastRelation:
+          #print(self.last_entity_relation.LastRelation)
+          #for relation in self.last_entity_relation.LastRelation:
                #print(relation.status)
-               if relation.direction ==Entity.RelationDirection.InActive and \
+               if self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.InActive and \
                     self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
                          self.state1()
 
 
-               elif relation.direction==Entity.RelationDirection.InActive and \
+               elif self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive and \
                     self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Pasive:
                          self.state2()
 
-               elif relation.direction ==Entity.RelationDirection.Divergent and \
+               elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Divergent and \
                     self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                          self.state3()
 
-               elif relation.direction ==Entity.RelationDirection.Convergent and \
+               elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Convergent and \
                     self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                          self.state4()
                     
@@ -454,6 +422,7 @@ class V2RelationStatus():
           self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
           #  update start time with last end time
           self.last_entity_relation.CurentRelation=self.current_entity_relation
+          self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation
           self.Save(self.last_entity_relation)
           # last current to last last
           #curent to curent last
