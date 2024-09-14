@@ -323,8 +323,7 @@ class V2RelationStatus():
                          status=Entity.RelationStatus.null,
                          SubjectList=[]
                     )
-               # Initialize a new LastEntityRelation with the null relation 
-               
+               # Initialize a new LastEntityRelation with the null relation                
                     self.last_entity_relation = Entity.LastEntityRelation(
                          uid=uid,
                          source=self.Surce,
@@ -344,15 +343,14 @@ class V2RelationStatus():
                               start_time=com.Common_Time.Now(),
                               end_time=com.Common_Time.Now(),
                               direction=self.direction_range(),  
-                              status=Entity.RelationStatus.null,
+                              status=Entity.RelationStatus.Active,
                               SubjectList=[]
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
                          self.last_entity_relation.CurentRelation = copy.deepcopy(new_current_relation)
                          self.check_status()
-                         break
-                    
+                         break                    
                #else:                  
           self.Save(self.last_entity_relation)
 
@@ -452,7 +450,6 @@ class V2RelationStatus():
           self.Save(self.last_entity_relation.CurentRelation)
           #update time
           #zakhire last
-
      def update2(self):
           self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
           self.last_entity_relation.CurentRelation=self.current_entity_relation
@@ -462,7 +459,6 @@ class V2RelationStatus():
           #curent to curent last
           
      def default_serializer(self,obj):
-          """Custom serializer for datetime objects."""
           if isinstance(obj, datetime):
                return obj.isoformat()
           elif isinstance(obj, Entity.CurentEntityRelation):
