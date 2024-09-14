@@ -146,6 +146,7 @@ class V2RelationStatus():
           self.last_entity_relation=None
           self.current_entity_relation=None
           
+
           # self.last_entity_relation.LastRelation.append(self.current_entity_relation)
           
           self.IdealMinTime=15
@@ -161,6 +162,7 @@ class V2RelationStatus():
           DataProperty2 = self.getData(self.Desi)
 
           self.setDataToArray(DataProperty1,DataProperty2)
+         
           #print(self.combined_data)
           start_sec,now_sec=self.createSyncTimeFrame()
           #print(start_sec,now_sec)
@@ -300,12 +302,9 @@ class V2RelationStatus():
      def Deviation(self,length1,DataProperty1,DataProperty2,avg1,avg2 ):
           totalSum=0
           for k in range(length1):              
-               multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
+               multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2))
                totalSum+= multiply
           return totalSum
-
-
-
 
      def create_current_relation(self):
           # ??
@@ -447,14 +446,15 @@ class V2RelationStatus():
 
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
-          self.Save(self.last_entity_relation.CurentRelation)
+          self.Save(self.last_entity_relation)
           #update time
           #zakhire last
+
      def update2(self):
           self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
+          #  update start time with last end time
           self.last_entity_relation.CurentRelation=self.current_entity_relation
-          self.Save(self.last_entity_relation.CurentRelation)
-          self.Save(self.last_entity_relation.CurentRelation)
+          self.Save(self.last_entity_relation)
           # last current to last last
           #curent to curent last
           
