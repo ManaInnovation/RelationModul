@@ -6,12 +6,17 @@ import math
 import Entity
 import copy
 from dateutil import parser
+import pickle
 
 
 
 class V2RelationBehave():
     def New(self,Surce,Desi):
-          if(self.Get(Surce,Desi)==com.ProcesStatus.Null):
+          uid = com.Common_UID.new(Surce + Desi)
+          path='D:/EachEntityRelation2'
+          file_name = os.path.join(path, uid + '.json')
+          if not os.path.exists(file_name):
+          #if(self.Get(Surce,Desi)==com.ProcesStatus.Null):
                new_relation = Entity.CurentEntityRelation(
                     start_time=com.Common_Time.Now(),  
                     end_time=com.Common_Time.Now(),    
@@ -24,15 +29,19 @@ class V2RelationBehave():
                               source=Surce,
                               destination=Desi,
                               CurentRelation=new_relation,
+                              LastRelation=[]
                               
                          )
                self.Save(self.last_entity_relation )
                
           else:
-                new_relation=com.ProcesStatus.Null
-          
-          return new_relation
+               self.last_entity_relation = self.Get(Surce, Desi, path)
+               if self.last_entity_relation != com.ProcesStatus.Null:
+                    new_relation = self.last_entity_relation.CurentRelation
+               else:
+                    new_relation = com.ProcesStatus.Null
 
+          return new_relation
 
     def Update(self,CurentRelation):
           #def active(none, passive):
@@ -91,36 +100,128 @@ class V2RelationBehave():
           #       "type": CurentRelation.direction,
           #       "EndTime": CurentRelation.EndTime
           #   })
-              
-    def Get(self, Surce, Desi, path='D:/EachEntityRelation3'):
+    def Remove(self,UID):
+        pass
+#     def Save(self, entity_relation , path='D:/EachEntityRelation3'):
+#             file_name = os.path.join(path, entity_relation.uid + '.json')
+#             with open(file_name, 'w') as file:
+#                json.dump(entity_relation.__dict__, file)
+        
+#             return entity_relation
+    
+    def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
+          if not os.path.exists(path):
+               os.makedirs(path)
+          file_name = os.path.join(path, CurentRelation.uid + '.json')
+          with open(file_name, 'w') as file:
+               json.dump(CurentRelation, file, default=self.default_serializer,indent=4)
+     
+          return CurentRelation
+    
+    def default_serializer(self,obj):
+          if isinstance(obj, datetime):
+               return obj.isoformat()
+          elif isinstance(obj, Entity.CurentEntityRelation):
+        # Convert the custom object to a dictionary
+               return {
+                    'start_time': obj.start_time.isoformat() if isinstance(obj.start_time, datetime) else obj.start_time,
+                    'end_time': obj.end_time.isoformat() if isinstance(obj.end_time, datetime) else obj.end_time,
+                    'direction': obj.direction,  # Assuming this is a serializable attribute
+                    'status': obj.status,        # Assuming this is a serializable attribute
+                    'SubjectList': [self.default_serializer(item) for item in obj.SubjectList]   # Assuming this is serializable
+               }
+          elif isinstance(obj, Entity.SubjectItem):
+       
+               return {
+                    'name': obj.name,
+                    'value': obj.value,
+                    'type': obj.type
+               }
+          elif isinstance(obj, Entity.LastEntityRelation):
+            return {
+                'uid': obj.uid,
+                'source': obj.source,
+                'destination': obj.destination,
+                'config': obj.config,
+                'option': obj.option,
+                'CurentRelation': self.default_serializer(obj.CurentRelation),
+                'LastRelation': [self.default_serializer(rel) for rel in obj.LastRelation]
+            }
+          else:
+               raise TypeError(f"Type {type(obj)} not serializable")
+          
+    def custom_parser(self, dct):
+          for key, value in dct.items():
+               if isinstance(value, str):
+                    try:
+                         # Try to parse the string into a datetime object
+                         dct[key] = parser.isoparse(value)
+                    except (ValueError, parser.ParserError):
+                         # If parsing fails, leave the value as is
+                         pass
+          return dct       
+    def Get(self, Surce, Desi, path='D:/EachEntityRelation2'):
          uid = com.Common_UID.new(Surce + Desi)
          file_name = os.path.join(path, uid + '.json')
          try:
                with open(file_name, 'r') as file:
-                         data = json.load(file)
-               CurentRelation = self.LastEntityRelation.from_dict(data)
-               return CurentRelation
-         except:
-               CurentRelation = com.ProcesStatus.Null
-            
-         return CurentRelation
 
-    def Remove(self,UID):
-        pass
+                    data = json.load(file)
+                    print(f"Parsed data: {data}")  # Debugging line
 
-    def Save(self, entity_relation , path='D:/EachEntityRelation3'):
-            with open(os.path.join(path,entity_relation.uid+'.json'), 'w') as file:
-               json.dump(entity_relation.to_dict(), file,default=str)
-        
-            return entity_relation
-    
+            # Reconstruct CurentEntityRelation from the parsed JSON data
+                    curent_relation_data = data.get('CurentRelation', {})
+                    CurentRelation = self.reconstruct_curent_entity_relation(curent_relation_data)
+                    print(f"CurentRelation: {CurentRelation}")  # Debugging line
+
+                    # Reconstruct LastEntityRelation from the parsed JSON data
+                    last_relation_data = data.get('LastRelation', [])
+                    LastRelation = [self.reconstruct_curent_entity_relation(rel) for rel in last_relation_data]
+                    print(f"LastRelation: {LastRelation}")  # Debugging line
+                    last_entity_relation = Entity.LastEntityRelation(
+                uid=data.get('uid'),
+                source=data.get('source'),
+                destination=data.get('destination'),
+                config=data.get('config'),
+                option=data.get('option'),
+                CurentRelation=CurentRelation,
+                LastRelation=LastRelation
+            )
+
+
+
+         except FileNotFoundError:
+               print(f"File not found: {file_name}")  # Debugging line
+               last_entity_relation = com.ProcesStatus.Null
+         except json.JSONDecodeError as e:
+               print(f"JSON decode error: {e}")  # Debugging line
+               last_entity_relation = com.ProcesStatus.Null
+         except Exception as e:
+               print(f"Unexpected error: {e}")  # Debugging line
+               last_entity_relation = com.ProcesStatus.Null
+          
+         return last_entity_relation
+    def reconstruct_curent_entity_relation(self,data):
+          return Entity.CurentEntityRelation(
+               start_time=parser.isoparse(data.get('start_time')) if 'start_time' in data else None,
+               end_time=parser.isoparse(data.get('end_time')) if 'end_time' in data else None,
+               direction=data.get('direction'),
+               status=data.get('status'),
+               SubjectList=[self.reconstruct_subject_item(item) for item in data.get('SubjectList', [])]
+          )
+
+    def reconstruct_subject_item(self,data):
+          return Entity.SubjectItem(
+               name=data.get('name'),
+               value=data.get('value'),
+               type=data.get('type')
+          )
 class V2RelationStatus():
      def __init__(self, Surce, Desi,covarcnf:Entity.CovarCnf) -> None:
 
           self.Surce=Surce
           self.Desi=Desi
           self.covarcnf=covarcnf
-
           # self.uid = com.Common_UID.new(Surce+Desi)
           # self.ibehave = V2RelationBehave()
           # self.CurentRelation = self.ibehave.Get(self.uid)
@@ -158,10 +259,10 @@ class V2RelationStatus():
           print(self.candidate_data)
           cov=self.covariance()
           self.cov=cov
-          self.MyBehave.New(self.Surce,self.Desi)
-          pr=self.MyBehave.Get(self.Surce,self.Desi)
-          self.check_status()
-
+          #self.MyBehave.New(self.Surce,self.Desi)
+          #pr=self.MyBehave.Get(self.Surce,self.Desi)
+          #self.check_status()
+          self.create_current_relation()
      def StartProcess2(self,index):
           tsom=0
           for i in range(0, len(self.combined_data)):
@@ -284,25 +385,7 @@ class V2RelationStatus():
                
                if self.last_entity_relation == com.ProcesStatus.Null:
                     self.MyBehave.New(self.Surce,self.Desi)
-               # If there is no previous relation, create a null relation
-                    # uid = com.Common_UID.new(self.Surce + self.Desi)
-                    # start_time = com.Common_Time.Now()
-                    # self.current_entity_relation = Entity.CurentEntityRelation(
-                    #      start_time=start_time,
-                    #      end_time=start_time,
-                    #      direction=Entity.RelationDirection.InActive,
-                    #      status=Entity.RelationStatus.null,
-                    #      SubjectList=[]
-                    # )
-               # Initialize a new LastEntityRelation with the null relation                
-                    # self.last_entity_relation = Entity.LastEntityRelation(
-                    #      uid=uid,
-                    #      source=self.Surce,
-                    #      destination=self.Desi,
-                    #      CurentRelation=copy.deepcopy(self.current_entity_relation),
-                    #      LastRelation=[]
-                    # )
-               #self.Save(se)
+          
                else:
                     new_current_relation = copy.deepcopy(self.current_entity_relation)
                     new_current_relation.direction = self.direction_range()
@@ -335,23 +418,23 @@ class V2RelationStatus():
           #print(self.last_entity_relation.LastRelation)
           #for relation in self.last_entity_relation.LastRelation:
                #print(relation.status)
-               if self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.InActive and \
-                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
-                         self.state1()
+                    if self.last_entity_relation.LastRelation[-1].direction ==Entity.RelationDirection.InActive and \
+                         self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
+                              self.state1()
 
 
-               elif self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive and \
-                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Pasive:
-                         self.state2()
+                    elif self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive and \
+                         self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Pasive:
+                              self.state2()
 
-               elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Divergent and \
-                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
-                         self.state3()
+                    elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Divergent and \
+                         self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
+                              self.state3()
 
-               elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Convergent and \
-                    self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
-                         self.state4()
-                    
+                    elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Convergent and \
+                         self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
+                              self.state4()
+                         
      def state1(self):     
           if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
@@ -414,7 +497,7 @@ class V2RelationStatus():
 
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
-          self.Save(self.last_entity_relation)
+          self.MyBehave.Save(self.last_entity_relation)
           #update time
           #zakhire last
 
@@ -423,7 +506,7 @@ class V2RelationStatus():
           #  update start time with last end time
           self.last_entity_relation.CurentRelation=self.current_entity_relation
           self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation
-          self.Save(self.last_entity_relation)
+          self.MyBehave.Save(self.last_entity_relation)
           # last current to last last
           #curent to curent last
           
@@ -449,8 +532,7 @@ class V2RelationStatus():
           else:
                raise TypeError(f"Type {type(obj)} not serializable")
      
-
-     def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
+     def Save(self, CurentRelation , path='D:/EachEntityRelation3'):
             if not os.path.exists(path):
                os.makedirs(path)
             filename = com.Common_UID.new(self.Surce + self.Desi) + '.json'
@@ -474,7 +556,6 @@ class V2RelationStatus():
           with open(file_path, 'r') as file:
                data = json.load(file, object_hook=self.custom_parser)  # Use the custom parser
           return data
-
 
      def checkLastRelationStatus():
           pass
