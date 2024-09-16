@@ -51,6 +51,14 @@ class LastEntityRelation:
             self.CurentRelation =CurentRelation
             self.LastRelation =LastRelation if isinstance(LastRelation, list) else []
 
+        def __str__(self):
+            curent_relation_str = str(self.CurentRelation) if self.CurentRelation else "None"
+            last_relation_str = ", ".join(str(rel) for rel in self.LastRelation) if self.LastRelation else "[]"
+            return (f"LastEntityRelation(uid={self.uid}, source={self.source}, "
+                  f"destination={self.destination}, config={self.config}, "
+                  f"option={self.option}, CurentRelation={curent_relation_str}, "
+                  f"LastRelation=[{last_relation_str}])")
+
 
 class SubjectItem:
       def __init__(self,name: str, value: str ,type: str):
@@ -58,6 +66,9 @@ class SubjectItem:
             self.name=name
             self.value=value
             self.type=type
+
+      def __repr__(self):
+        return f"SubjectItem(name={self.name}, value={self.value}, type={self.type})"
       
 class TotalRelation:
     def __init__(self, uid, type, time, RelationNumber):

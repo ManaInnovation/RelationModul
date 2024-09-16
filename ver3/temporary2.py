@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 import CommonFunction as com
 import uuid
-
+import statistics
 
 class V2RelationStatus():
 
@@ -13,49 +13,35 @@ class V2RelationStatus():
     base_url = "http://www.asset23d.ir/api/OBJVALUE"
 
     def __init__(self):
-        self.combined_data=[[None, None],[None, None],[7, None],[None, None],[5, None],[None, None],[None, None],
-                            [None, None],[0, None],[None, None],[15, None],[17, None],[None, None],[None, None],[None, None],[None, None],[20, None],[None, None]]
-          
-          
+        self.candidate_data=[[1, 2],[2, 4],[3, 6],[4, 8],[5, 10]]
         self.StartProcess()
 
     def StartProcess(self):
+         self.covariancever1()
 
-          #combined_data = [[None, None] for _ in range(86400)]
-        exe=self.new("example")
-        exe2=self.new("hello")
-        print(exe+exe2)
-        #self.FindBlankRange(1)
-        #print(datetime.now())
+  
+    def covariancever1(self,):
+        DataProperty1=[]
+        DataProperty2=[]
+        DataSum1=0
+        DateSum2=0
+        totalSum=0
+        k=0
+        for i in range(len(self.candidate_data)):
+               DataProperty1.append(self.candidate_data[i][0])   
+               DataProperty2.append(self.candidate_data[i][1])
 
-    class CurentEntityRelation:
-      def __init__(self,start_time:str=com.Common_Time.Now(),end_time:str=com.Common_Time.Now(),
-                   direction: str = RelationDirection.InActive,status: str = RelationStatus.null,SubjectList:list=com.ProcesStatus.Null):
-        self.start_time = start_time
-        self.end_time =end_time
-        self.direction =direction
-        self.status = status
-        self.SubjectList = SubjectList if SubjectList else []
+        # DataSum1=sum(DataProperty1)
+        # DateSum2=sum(DataProperty2)
+        avg1 =statistics.mean(DataProperty1)
+        avg2 =statistics.mean(DataProperty2)
 
-      def to_dict(self):
-        return {
-            "start_time": self.start_time.isoformat() if isinstance(self.start_time, datetime) else self.start_time,
-            "end_time": self.end_time.isoformat() if isinstance(self.end_time, datetime) else self.end_time,
-            "direction": self.direction,
-            "status": self.status,
-            "SubjectList": self.SubjectList
-        }
-
-      @classmethod
-      def from_dict(cls, data):
-        return cls(
-            start_time=data.get("start_time"),
-            end_time=data.get("end_time"),
-            direction=data.get("direction"),
-            status=data.get("status"),
-            SubjectList=data.get("SubjectList", [])
-        )
-              
+        for k in range(len(self.candidate_data)):              
+            multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
+            totalSum+= multiply
+        cov= totalSum/(len(self.candidate_data)-1)
+        print(cov)
+        return cov
 if __name__=="__main__":
     RelationStatus=V2RelationStatus()
     #test=RelationStatus.StartProcess()

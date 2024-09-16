@@ -7,7 +7,7 @@ import Entity
 import copy
 from dateutil import parser
 import pickle
-
+import statistics
 
 
 class V2RelationBehave():
@@ -32,8 +32,7 @@ class V2RelationBehave():
                               LastRelation=[]
                               
                          )
-               self.Save(self.last_entity_relation )
-               
+               self.Save(self.last_entity_relation )              
           else:
                self.last_entity_relation = self.Get(Surce, Desi, path)
                if self.last_entity_relation != com.ProcesStatus.Null:
@@ -102,12 +101,7 @@ class V2RelationBehave():
           #   })
     def Remove(self,UID):
         pass
-#     def Save(self, entity_relation , path='D:/EachEntityRelation3'):
-#             file_name = os.path.join(path, entity_relation.uid + '.json')
-#             with open(file_name, 'w') as file:
-#                json.dump(entity_relation.__dict__, file)
-        
-#             return entity_relation
+       
     
     def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
           if not os.path.exists(path):
@@ -118,48 +112,37 @@ class V2RelationBehave():
      
           return CurentRelation
     
-    def default_serializer(self,obj):
-          if isinstance(obj, datetime):
-               return obj.isoformat()
-          elif isinstance(obj, Entity.CurentEntityRelation):
-        # Convert the custom object to a dictionary
-               return {
-                    'start_time': obj.start_time.isoformat() if isinstance(obj.start_time, datetime) else obj.start_time,
-                    'end_time': obj.end_time.isoformat() if isinstance(obj.end_time, datetime) else obj.end_time,
-                    'direction': obj.direction,  # Assuming this is a serializable attribute
-                    'status': obj.status,        # Assuming this is a serializable attribute
-                    'SubjectList': [self.default_serializer(item) for item in obj.SubjectList]   # Assuming this is serializable
-               }
-          elif isinstance(obj, Entity.SubjectItem):
-       
-               return {
-                    'name': obj.name,
-                    'value': obj.value,
-                    'type': obj.type
-               }
-          elif isinstance(obj, Entity.LastEntityRelation):
-            return {
-                'uid': obj.uid,
-                'source': obj.source,
-                'destination': obj.destination,
-                'config': obj.config,
-                'option': obj.option,
-                'CurentRelation': self.default_serializer(obj.CurentRelation),
-                'LastRelation': [self.default_serializer(rel) for rel in obj.LastRelation]
-            }
-          else:
-               raise TypeError(f"Type {type(obj)} not serializable")
-          
-    def custom_parser(self, dct):
-          for key, value in dct.items():
-               if isinstance(value, str):
-                    try:
-                         # Try to parse the string into a datetime object
-                         dct[key] = parser.isoparse(value)
-                    except (ValueError, parser.ParserError):
-                         # If parsing fails, leave the value as is
-                         pass
-          return dct       
+    def default_serializer(self, obj, seen=None):
+     if isinstance(obj, datetime):
+          return obj.isoformat()
+     elif isinstance(obj, Entity.CurentEntityRelation):
+          return {
+               'start_time': obj.start_time.isoformat() if isinstance(obj.start_time, datetime) else obj.start_time,
+               'end_time': obj.end_time.isoformat() if isinstance(obj.end_time, datetime) else obj.end_time,
+               'direction': obj.direction,
+               'status': obj.status,
+               'SubjectList': [self.default_serializer(item, seen) for item in obj.SubjectList]
+          }
+     elif isinstance(obj, Entity.SubjectItem):
+          return {
+               'name': obj.name,
+               'value': obj.value,
+               'type': obj.type
+          }
+     elif isinstance(obj, Entity.LastEntityRelation):
+          return {
+               'uid': obj.uid,
+               'source': obj.source,
+               'destination': obj.destination,
+               'config': obj.config,
+               'option': obj.option,
+               'CurentRelation': self.default_serializer(obj.CurentRelation, seen),
+               'LastRelation': [self.default_serializer(rel, seen) for rel in obj.LastRelation]
+          }
+     else:
+          raise TypeError(f"Type {type(obj)} not serializable")
+
+
     def Get(self, Surce, Desi, path='D:/EachEntityRelation2'):
          uid = com.Common_UID.new(Surce + Desi)
          file_name = os.path.join(path, uid + '.json')
@@ -167,17 +150,12 @@ class V2RelationBehave():
                with open(file_name, 'r') as file:
 
                     data = json.load(file)
-                    print(f"Parsed data: {data}")  # Debugging line
+               
 
-            # Reconstruct CurentEntityRelation from the parsed JSON data
                     curent_relation_data = data.get('CurentRelation', {})
-                    CurentRelation = self.reconstruct_curent_entity_relation(curent_relation_data)
-                    print(f"CurentRelation: {CurentRelation}")  # Debugging line
-
-                    # Reconstruct LastEntityRelation from the parsed JSON data
+                    CurentRelation = self.reconstruct_curent_entity_relation(curent_relation_data) #dict to object
                     last_relation_data = data.get('LastRelation', [])
                     LastRelation = [self.reconstruct_curent_entity_relation(rel) for rel in last_relation_data]
-                    print(f"LastRelation: {LastRelation}")  # Debugging line
                     last_entity_relation = Entity.LastEntityRelation(
                 uid=data.get('uid'),
                 source=data.get('source'),
@@ -188,16 +166,14 @@ class V2RelationBehave():
                 LastRelation=LastRelation
             )
 
-
-
          except FileNotFoundError:
                print(f"File not found: {file_name}")  # Debugging line
                last_entity_relation = com.ProcesStatus.Null
          except json.JSONDecodeError as e:
-               print(f"JSON decode error: {e}")  # Debugging line
+               print(f"JSON decode error: {e}")  
                last_entity_relation = com.ProcesStatus.Null
          except Exception as e:
-               print(f"Unexpected error: {e}")  # Debugging line
+               print(f"Unexpected error: {e}")  
                last_entity_relation = com.ProcesStatus.Null
           
          return last_entity_relation
@@ -216,39 +192,29 @@ class V2RelationBehave():
                value=data.get('value'),
                type=data.get('type')
           )
+
 class V2RelationStatus():
      def __init__(self, Surce, Desi,covarcnf:Entity.CovarCnf) -> None:
 
           self.Surce=Surce
           self.Desi=Desi
           self.covarcnf=covarcnf
-          # self.uid = com.Common_UID.new(Surce+Desi)
-          # self.ibehave = V2RelationBehave()
-          # self.CurentRelation = self.ibehave.Get(self.uid)
-          # if self.CurentRelation == com.ProcesStatus.Null:
-          #      self.CurentRelation = self.ibehave.New(Surce,Desi)
-          #      self.CurentRelation = self.ibehave.Save(self.CurentRelation)
+     
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
           self.combined_data = [[None, None] for _ in range(86400)]
-          self.candidate_data=[]
-          self.syncdata=[]
-
-          self.last_relation = None  
-
+          self.candidate_data=[]  
 
           self.MyBehave=V2RelationBehave()
           self.current_entity_relation=self.MyBehave.New(self.Surce,self.Desi)
-          #self.current_entity_relation=self.MyBehave.Save(self.current_entity_relation)
           self.last_entity_relation=self.MyBehave.Get(self.Surce, self.Desi)
               
           self.IdealMinTime=15
           self.StartProcess()
-          #self.StartProcess2()
           
           
      def StartProcess(self):
-          print("start process called")
+          #print("start process called")
           DataProperty1 = self.getData(self.Surce)
           DataProperty2 = self.getData(self.Desi)
 
@@ -256,13 +222,10 @@ class V2RelationStatus():
      
           start_sec,now_sec=self.createSyncTimeFrame()
           self.CreateCandidateData(start_sec,now_sec)
-          print(self.candidate_data)
           cov=self.covariance()
           self.cov=cov
-          #self.MyBehave.New(self.Surce,self.Desi)
-          #pr=self.MyBehave.Get(self.Surce,self.Desi)
-          #self.check_status()
           self.create_current_relation()
+     
      def StartProcess2(self,index):
           tsom=0
           for i in range(0, len(self.combined_data)):
@@ -304,7 +267,15 @@ class V2RelationStatus():
           for entry in data:
                et_seconds = self.time_to_seconds(entry.get('et'))
                ut_seconds = self.time_to_seconds(entry.get('ut'))
-               value = float(entry.get('va'))
+               va = entry.get('va')
+               if va is not None:
+                    try:
+                         value = float(va)
+                    except ValueError:
+                         value = None  # Set to None ???
+                         print(f"Warning: 'va' value '{va}' is not a valid float.")
+               else:
+                    value = None 
                for j in range (et_seconds, ut_seconds+1):
                 self.combined_data[j][index]=value
 
@@ -322,75 +293,43 @@ class V2RelationStatus():
           #self.syncdata=self.combined_data[StartSecTime:NowSec]
           #return syncdata
 
-     def covariancever1(self,):
+     def covariance(self):
+        if not self.candidate_data:
+          print("No data available for covariance calculation.")
+          return None
         DataProperty1=[]
         DataProperty2=[]
-        DataSum1=0
-        DateSum2=0
         totalSum=0
         k=0
         for i in range(len(self.candidate_data)):
-               DataProperty1.append(self.candidate_data[i][0])   
-               DataProperty2.append(self.candidate_data[i][1])
-               count1=len(DataProperty1)
-               count2=len(DataProperty2)
-               #len(data1)==len(data2)?==len(syncdata)?
-        for j in range(len(DataProperty1)):
-                DataSum1+=DataProperty1[j]
-                DateSum2+=DataProperty2[j]
-        avg1 =DataSum1/len(DataProperty1)
-        avg2 =DateSum2/len(DataProperty2)
-        for k in range(len(self.DataProperty1)):              
+               value1 = self.candidate_data[i][0]
+               value2 = self.candidate_data[i][1]
+        
+               if value1 is not None and value2 is not None:
+                    DataProperty1.append(value1)
+                    DataProperty2.append(value2)
+
+        if len(DataProperty1) < 2 or len(DataProperty2) < 2:
+          print("Not enough data points to compute covariance.")
+          return None
+
+        avg1 =statistics.mean(DataProperty1)
+        avg2 =statistics.mean(DataProperty2)
+
+        for k in range(len(self.candidate_data)):              
             multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
             totalSum+= multiply
         cov= totalSum/(len(self.candidate_data)-1)
-        print(cov)
         return cov
 
-     def covariance(self):
-          DataProperty1=[]
-          DataProperty2=[]
-          for i in range(len(self.candidate_data)):
-               DataProperty1.append(self.candidate_data[i][0])   
-               DataProperty2.append(self.candidate_data[i][1])
-               count1=len(DataProperty1)
-               count2=len(DataProperty2)
-               #len(data1)==len(data2)?==len(syncdata)?
-
-          totalSum=self.DataSum(DataProperty1,DataProperty2,len(DataProperty1),len(DataProperty2))
-          cov= totalSum/(len(self.candidate_data)-1)
-          print(cov)
-          return cov
-
-     def DataSum(self,data1,data2,length1,length2):
-          DataSum1=0
-          DataSum2=0
-          for j in range(len(data1)):
-               DataSum1+=data1[j]
-               DataSum2+=data2[j]
-
-          avg1=com.calculation.calculate_average(DataSum1,length1)
-          avg2= com.calculation.calculate_average(DataSum2,length2)
-          totalSum=self.Deviation(length1, data1,data2, avg1,avg2)
-          return totalSum
-     
-     def Deviation(self,length1,DataProperty1,DataProperty2,avg1,avg2 ):
-          totalSum=0
-          for k in range(length1):              
-               multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2))
-               totalSum+= multiply
-          return totalSum
-
-     def create_current_relation(self):
-               
+     def create_current_relation(self):               
                if self.last_entity_relation == com.ProcesStatus.Null:
                     self.MyBehave.New(self.Surce,self.Desi)
           
                else:
                     new_current_relation = copy.deepcopy(self.current_entity_relation)
                     new_current_relation.direction = self.direction_range()
-               #while self.last_entity_relation.CurentRelation:
-                    #self.current_entity_relation.direction=self.direction_range()
+          
                     if self.last_entity_relation.CurentRelation.direction!= new_current_relation.direction:
                          self.last_entity_relation.LastRelation.append(copy.deepcopy(self.last_entity_relation.CurentRelation))
                          self.current_entity_relation=Entity.CurentEntityRelation(
@@ -402,11 +341,16 @@ class V2RelationStatus():
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
-                         #self.last_entity_relation.CurentRelation = copy.deepcopy(new_current_relation)
-                         self.check_status()                                             
-               #else:                  
-          #self.Save(self.last_entity_relation)
+                         #print(self.current_entity_relation)
+
+                         self.check_status()    
+                    else:
+                         self.update1()
+
+          
      def direction_range(self):
+          if self.cov==None:
+               return Entity.RelationDirection.InActive
           if self.cov> self.covarcnf.Convergent:
                return Entity.RelationDirection.Convergent
           if self.cov<-self.covarcnf.Divergent:
@@ -415,23 +359,21 @@ class V2RelationStatus():
                return Entity.RelationDirection.InActive
 
      def check_status(self):
-          #print(self.last_entity_relation.LastRelation)
-          #for relation in self.last_entity_relation.LastRelation:
-               #print(relation.status)
+               if self.last_entity_relation.LastRelation:
                     if self.last_entity_relation.LastRelation[-1].direction ==Entity.RelationDirection.InActive and \
                          self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.null:
                               self.state1()
 
 
-                    elif self.last_entity_relation.LastRelation.direction==Entity.RelationDirection.InActive and \
+                    elif self.last_entity_relation.LastRelation[-1].direction==Entity.RelationDirection.InActive and \
                          self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Pasive:
                               self.state2()
 
-                    elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Divergent and \
+                    elif self.last_entity_relation.LastRelation[-1].direction ==Entity.RelationDirection.Divergent and \
                          self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                               self.state3()
 
-                    elif self.last_entity_relation.LastRelation.direction ==Entity.RelationDirection.Convergent and \
+                    elif self.last_entity_relation.LastRelation[-1].direction ==Entity.RelationDirection.Convergent and \
                          self.last_entity_relation.CurentRelation.status==Entity.RelationStatus.Active:
                               self.state4()
                          
@@ -498,65 +440,12 @@ class V2RelationStatus():
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
           self.MyBehave.Save(self.last_entity_relation)
-          #update time
-          #zakhire last
 
      def update2(self):
-          self.last_entity_relation.LastRelation.append(self.last_entity_relation.CurentRelation)
-          #  update start time with last end time
-          self.last_entity_relation.CurentRelation=self.current_entity_relation
-          self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation
+          self.last_entity_relation.CurentRelation=copy.deepcopy(self.current_entity_relation)
+          self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation.end_time
           self.MyBehave.Save(self.last_entity_relation)
-          # last current to last last
-          #curent to curent last
-          
-     def default_serializer(self,obj):
-          if isinstance(obj, datetime):
-               return obj.isoformat()
-          elif isinstance(obj, Entity.CurentEntityRelation):
-        # Convert the custom object to a dictionary
-               return {
-                    'start_time': obj.start_time.isoformat() if isinstance(obj.start_time, datetime) else obj.start_time,
-                    'end_time': obj.end_time.isoformat() if isinstance(obj.end_time, datetime) else obj.end_time,
-                    'direction': obj.direction,  # Assuming this is a serializable attribute
-                    'status': obj.status,        # Assuming this is a serializable attribute
-                    'SubjectList': [self.default_serializer(item) for item in obj.SubjectList]   # Assuming this is serializable
-               }
-          elif isinstance(obj, Entity.SubjectItem):
-        # Convert SubjectItem to a dictionary
-               return {
-                    'name': obj.name,
-                    'value': obj.value,
-                    'type': obj.type
-               }
-          else:
-               raise TypeError(f"Type {type(obj)} not serializable")
      
-     def Save(self, CurentRelation , path='D:/EachEntityRelation3'):
-            if not os.path.exists(path):
-               os.makedirs(path)
-            filename = com.Common_UID.new(self.Surce + self.Desi) + '.json'
-            with open(os.path.join(path,filename), 'w') as file:
-               json.dump(CurentRelation.__dict__, file, default=self.default_serializer,indent=4)
-        
-            return CurentRelation
-     
-     def custom_parser(self,dct):
-          for key, value in dct.items():
-               if isinstance(value, str):
-                    try:
-                         # Try to parse the string into a datetime object
-                         dct[key] = parser.isoparse(value)
-                    except (ValueError, parser.ParserError):
-                         # If parsing fails, leave the value as is
-                         pass
-          return dct
-
-     def load_json_with_dates(self,file_path):
-          with open(file_path, 'r') as file:
-               data = json.load(file, object_hook=self.custom_parser)  # Use the custom parser
-          return data
-
      def checkLastRelationStatus():
           pass
      def changeStatus(self,CurentRelation,LastRelation):
@@ -579,13 +468,6 @@ class V2RelationStatusV2(V2RelationStatus):
           self.CurentRelation = self.ibehave.Get(self.uid)
           super().__init__(self.CurentRelation['source'], self.CurentRelation['destination'])
 
-# iV2RelationStatus = V2RelationStatus('A','B')
-# MyTestRelarion = iV2RelationStatus.CurentRelation
-
-#print('Step 1:',curenttestUID)
-# print('Step 2:',GetTestRelation)
-#print('Step StartTime:',MyTestRelarion['StartTime'])
-
 class RelationMatrix():
      def getAllProperty():
           pass
@@ -602,5 +484,6 @@ if __name__=="__main__":
      DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
      covarcnf=Entity.CovarCnf()
      RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
-     #test=RelationStatus.StartProcess()
-     #print(test)
+
+     # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
+     # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
