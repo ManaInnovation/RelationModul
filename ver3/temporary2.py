@@ -13,7 +13,7 @@ class V2RelationStatus():
     base_url = "http://www.asset23d.ir/api/OBJVALUE"
 
     def __init__(self):
-        self.candidate_data=[[1, 2],[2, 4],[3, 6],[4, 8],[5, 10]]
+        self.candidate_data=[[1, 300],[2, 600],[3, 900]]
         self.StartProcess()
 
     def StartProcess(self):
