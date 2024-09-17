@@ -224,7 +224,7 @@ class V2RelationStatus():
           self.CreateCandidateData(start_sec,now_sec)
           cov=self.covariance()
           self.cov=cov
-          self.create_current_relation()
+          self.create_current_relation_v0()
      
      def StartProcess2(self,index):
           tsom=0
@@ -402,61 +402,61 @@ class V2RelationStatus():
           if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state3()
+               
                
           elif self.current_entity_relation.direction == Entity.RelationDirection.Convergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state4()
+               
 
           elif self.current_entity_relation.direction == Entity.RelationDirection.InActive:
                self.current_entity_relation.status= Entity.RelationStatus.null
                self.update1()
-               self.state1      
+                     
 
      def state2(self):
           if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state3()
+               
           elif self.current_entity_relation.direction == Entity.RelationDirection.Convergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state4()
+               
           elif self.current_entity_relation.direction == Entity.RelationDirection.InActive:
                self.current_entity_relation.status= Entity.RelationStatus.Pasive
                self.update1()
-               # self.state2     ????????????????????????????????????????????
+     
 
      def state3(self):
           if self.current_entity_relation.direction == Entity.RelationDirection.Convergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state4()
+               
           elif self.current_entity_relation.direction == Entity.RelationDirection.InActive:
                self.current_entity_relation.status = Entity.RelationStatus.Pasive
                self.update2()
-               self.state2()
+               
 
           elif self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
                self.current_entity_relation.status= Entity.RelationStatus.Active
                self.update1()
-               self.state3    
+                 
 
      def state4(self):
           if self.current_entity_relation.direction == Entity.RelationDirection.Divergent:
                self.current_entity_relation.status = Entity.RelationStatus.Active 
                self.update2()
-               self.state3()
+               
           elif self.current_entity_relation.direction == Entity.RelationDirection.InActive:
                self.current_entity_relation.status = Entity.RelationStatus.Pasive
                self.update2()
-               self.state2()
+               
 
           elif self.current_entity_relation.direction == Entity.RelationDirection.Convergent:
                self.current_entity_relation.status= Entity.RelationStatus.Active
                self.update1()
-               self.state4    
+                  
 
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
@@ -497,8 +497,8 @@ if __name__=="__main__":
      # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
      # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
 
-     SurceUID = "F4Y6DN86343N3N1MU360017QQR11538KH"
-     DesiUID = "830R68FF36SXMQ56W1VDTSVCLN823T0P5"
+     SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
+     DesiUID = "0Y0G112O5TITL7OU6N8SJ2E5N4GV17S42"
 
      covarcnf=Entity.CovarCnf()
      RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
