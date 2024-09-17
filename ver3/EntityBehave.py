@@ -209,7 +209,7 @@ class V2RelationStatus():
           self.current_entity_relation=self.MyBehave.New(self.Surce,self.Desi)
           self.last_entity_relation=self.MyBehave.Get(self.Surce, self.Desi)
               
-          self.IdealMinTime=15
+          self.IdealMinTime=1
           self.StartProcess()
           
           
@@ -322,7 +322,7 @@ class V2RelationStatus():
         cov= totalSum/(len(self.candidate_data)-1)
         return cov
 
-     def create_current_relation(self):               
+     def create_current_relation_v0(self):               
                if self.last_entity_relation == com.ProcesStatus.Null:
                     self.MyBehave.New(self.Surce,self.Desi)
           
@@ -347,7 +347,28 @@ class V2RelationStatus():
                     else:
                          self.update1()
 
+
+     def create_current_relation(self):               
+               if self.last_entity_relation == com.ProcesStatus.Null:
+                    self.MyBehave.New(self.Surce,self.Desi)
           
+               else:
+
+                    self.current_entity_relation.direction = self.direction_range()
+          
+                    if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
+                         self.last_entity_relation.LastRelation.append(copy.deepcopy(self.last_entity_relation.CurentRelation))
+                         self.current_entity_relation.status=Entity.RelationStatus.Active
+                         self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation.end_time
+
+                         CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
+                         self.current_entity_relation.SubjectList.append(CovarianceItem)
+                         #print(self.current_entity_relation)
+
+                         self.check_status()    
+                    else:
+                         self.update1()
+
      def direction_range(self):
           if self.cov==None:
                return Entity.RelationDirection.InActive
@@ -405,7 +426,7 @@ class V2RelationStatus():
           elif self.current_entity_relation.direction == Entity.RelationDirection.InActive:
                self.current_entity_relation.status= Entity.RelationStatus.Pasive
                self.update1()
-               self.state2    
+               # self.state2     ????????????????????????????????????????????
 
      def state3(self):
           if self.current_entity_relation.direction == Entity.RelationDirection.Convergent:
@@ -443,7 +464,7 @@ class V2RelationStatus():
 
      def update2(self):
           self.last_entity_relation.CurentRelation=copy.deepcopy(self.current_entity_relation)
-          self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation.end_time
+          # self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation.end_time
           self.MyBehave.Save(self.last_entity_relation)
      
      def checkLastRelationStatus():
@@ -460,14 +481,7 @@ class V2RelationStatus():
           pass      
      def CreateTimeFrame():
           pass
-        
-class V2RelationStatusV2(V2RelationStatus):
-     def __init__(self,uid) -> None:
-          self.uid = uid
-          self.ibehave = V2RelationBehave()
-          self.CurentRelation = self.ibehave.Get(self.uid)
-          super().__init__(self.CurentRelation['source'], self.CurentRelation['destination'])
-
+       
 class RelationMatrix():
      def getAllProperty():
           pass
@@ -480,10 +494,16 @@ class RelationMatrix():
                return com.ProcesStatus.eval_false_data
           
 if __name__=="__main__":
-     SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
-     DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
+     # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
+     # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
+
+     SurceUID = "F4Y6DN86343N3N1MU360017QQR11538KH"
+     DesiUID = "830R68FF36SXMQ56W1VDTSVCLN823T0P5"
+
      covarcnf=Entity.CovarCnf()
      RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
 
+     print(RelationStatus.current_entity_relation)
+     
      # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
      # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
