@@ -27,6 +27,14 @@ class ControlReturn():
 
 class CommonConfig():
     objvalue_url="http://www.asset23d.ir/api/OBJVALUE"
+    base_url="http://www.asset23d.ir/api/"
+    cmd_url = "http://www.asset23d.ir/api/CMD"
+    headers = {
+    "Content-Type": "application/json"
+}
+    getPropertyListCmd={"cmd": "get_all_property_list"}
+    PropObj="finalObj"
+    TypePropObj=list
     
 
 
@@ -40,14 +48,18 @@ class Common_Time():
         itime = datetime.now().replace(microsecond=0)
         return itime
     
-    # def time_to_seconds(time_str):
-    #     try:
-    #         dt = parser.parse(time_str)
-    #         return dt.hour * 3600 + dt.minute * 60 + dt.second
-    #     except (ValueError, parser.ParserError) as e:
-    #         print(f"Error parsing time string '{time_str}': {e}")
-    #         return None
-    
+    def ParseStringToDateTime(date_time_str):
+        try:
+            if not isinstance(date_time_str, str):
+                date_time_str = str(date_time_str)
+            dt = parser.parse(date_time_str)
+            return dt
+
+        except (ValueError, parser.ParserError) as e:
+               print(f"Error parsing time string '{date_time_str}': {e}")
+               return None
+
+        
 class RequestHandler():
     
     def getRequest(url, params=None, type:str = 'Json', **kwargs ):
@@ -59,9 +71,37 @@ class RequestHandler():
             except requests.exceptions.RequestException as e:
                 return e
             
-    def postRequest(url, data=None, json=None, **kwargs):
-        pass
+    def postRequest(url, headers=None, data=None,type:str = 'Json', **kwargs):
+        if type=='Json':
+            try:
+                response=requests.post(url,headers=headers, data=data)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        return response_data
+                    # final_obj = response_data.get('finalObj', None)
+                    # if final_obj is not None:
+                    except json.JSONDecodeError:
+                        return("Error: JSON response could not be decoded")
+                        #return None
+                else:
+                    return(f"Error: Unable to fetch property list, Status Code: {response.status_code}")
+                    #return None
+            except requests.exceptions.RequestException as e:
+                return(f"Error: {e}")
+                #return None
+    def CheckCmdResponseIsExist(response, uniqueOBJ,type ):
+        final_obj = response.get(uniqueOBJ, None)
+        if final_obj is not None:
 
+            #if type==list:
+            if isinstance(final_obj, type):
+                #if final_obj==type:
+                    return True,final_obj
+            else:
+                print(f"Error: Expected a {type} in the {uniqueOBJ} data")
+                return False
 
 class timeFrame():
     combined_data=[[None, None] for _ in range(86400)]
@@ -71,23 +111,6 @@ class timeFrame():
             return ProcesStatus.not_accepted_format
         else:
             return True
-
-   
-    
-
-    def find_range(self,data):
-        start = next((i for i in range(len(self.data)) if data[i] is not None), None)
-        end = next((i for i in range(len(self.data) - 1, -1, -1) if data[i] is not None), None)
-        return start, end
-
-
-    def find_common_range(self,data1, data2):
-        start1, end1 = find_range(self,data1)
-        start2, end2 = find_range(self,data2)
-        common_start = max(start1, start2)
-        common_end = min(end1, end2)
-        return common_start, common_end
-    
 
     def isNull(values1,values2):
         if not values1 or not values2:

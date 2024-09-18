@@ -76,3 +76,18 @@ class TotalRelation:
         self.type=type
         self.time = time
         self.RelationNumber= RelationNumber
+
+class Property:
+    def __init__(self, id, object_id, field_id, field_relation_id, prop_type, UID, option):
+        self.id = id
+        self.object_id = object_id
+        self.field_id = field_id
+        self.field_relation_id = field_relation_id
+        self.prop_type = prop_type
+        self.UID = UID
+        self.option = option
+
+    def __str__(self):
+        return (f"ID: {self.id}, Object ID: {self.object_id}, "
+                f"Field ID: {self.field_id}, Field Relation ID: {self.field_relation_id}, "
+                f"Type: {self.prop_type}, UID: {self.UID}, Option: {self.option}")

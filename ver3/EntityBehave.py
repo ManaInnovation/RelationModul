@@ -9,6 +9,7 @@ from dateutil import parser
 import pickle
 import statistics
 
+IdealMinTime=1
 
 class V2RelationBehave():
     def New(self,Surce,Desi):
@@ -199,6 +200,7 @@ class V2RelationStatus():
           self.Surce=Surce
           self.Desi=Desi
           self.covarcnf=covarcnf
+          self.cov=None
      
           self.DataProperty1=com.ProcesStatus.Null
           self.DataProperty2=com.ProcesStatus.Null
@@ -209,7 +211,7 @@ class V2RelationStatus():
           self.current_entity_relation=self.MyBehave.New(self.Surce,self.Desi)
           self.last_entity_relation=self.MyBehave.Get(self.Surce, self.Desi)
               
-          self.IdealMinTime=1
+          #self.IdealMinTime=1
           self.StartProcess()
           
           
@@ -222,9 +224,8 @@ class V2RelationStatus():
      
           start_sec,now_sec=self.createSyncTimeFrame()
           self.CreateCandidateData(start_sec,now_sec)
-          cov=self.covariance()
-          self.cov=cov
-          self.create_current_relation_v0()
+          self.covariance()
+          self.create_current_relation_v1()
      
      def StartProcess2(self,index):
           tsom=0
@@ -288,7 +289,7 @@ class V2RelationStatus():
           CurrentTime= com.Common_Time.Now()
           NowSec=self.time_to_seconds(CurrentTime)
           len(self.combined_data)
-          StartSecTime=NowSec-(self.IdealMinTime*60)
+          StartSecTime=NowSec-(IdealMinTime*60)
           return StartSecTime,NowSec
           #self.syncdata=self.combined_data[StartSecTime:NowSec]
           #return syncdata
@@ -319,8 +320,9 @@ class V2RelationStatus():
         for k in range(len(self.candidate_data)):              
             multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
             totalSum+= multiply
-        cov= totalSum/(len(self.candidate_data)-1)
-        return cov
+        self.cov= totalSum/(len(self.candidate_data)-1)
+        print("cov",self.cov)
+        #return cov
 
      def create_current_relation_v0(self):               
                if self.last_entity_relation == com.ProcesStatus.Null:
@@ -341,7 +343,7 @@ class V2RelationStatus():
                          )
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
-                         #print(self.current_entity_relation)
+                         print(self.current_entity_relation)
 
                          self.check_status()    
                     else:
@@ -363,7 +365,31 @@ class V2RelationStatus():
 
                          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
                          self.current_entity_relation.SubjectList.append(CovarianceItem)
-                         #print(self.current_entity_relation)
+                         print(self.current_entity_relation)
+
+                         self.check_status()    
+                    else:
+                         self.update1()
+
+     def create_current_relation_v1(self):               
+               if self.last_entity_relation == com.ProcesStatus.Null:
+                    self.MyBehave.New(self.Surce,self.Desi)
+          
+               else:
+                    self.current_entity_relation.direction = self.direction_range()
+          
+                    if self.last_entity_relation.CurentRelation.direction!= self.current_entity_relation.direction:
+                         self.last_entity_relation.LastRelation.append(copy.deepcopy(self.last_entity_relation.CurentRelation))
+                         self.current_entity_relation=Entity.CurentEntityRelation(
+                              start_time=self.last_entity_relation.CurentRelation.end_time,
+                              end_time=com.Common_Time.Now(),
+                              direction=self.direction_range(),  
+                              status=Entity.RelationStatus.Active,
+                              SubjectList=[]
+                         )
+                         CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
+                         self.current_entity_relation.SubjectList.append(CovarianceItem)
+                         print(self.current_entity_relation)
 
                          self.check_status()    
                     else:
@@ -460,6 +486,10 @@ class V2RelationStatus():
 
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
+          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
+          self.current_entity_relation.SubjectList.append(CovarianceItem)
+          self.current_entity_relation.end_time=com.Common_Time.Now()
+          self.last_entity_relation.CurentRelation=copy.deepcopy(self.current_entity_relation)
           self.MyBehave.Save(self.last_entity_relation)
 
      def update2(self):
@@ -467,43 +497,118 @@ class V2RelationStatus():
           # self.current_entity_relation.start_time=self.last_entity_relation.CurentRelation.end_time
           self.MyBehave.Save(self.last_entity_relation)
      
-     def checkLastRelationStatus():
-          pass
-     def changeStatus(self,CurentRelation,LastRelation):
-          self.CurentRelation.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-                
-     def updateLastStatus():
-          pass
-     def getDataLog():
-          pass      
-     def CreateTimeFrame():
-          pass
        
-class RelationMatrix():
-     def getAllProperty():
-          pass
+class V2RelationMatrix():
+     def __init__(self,) -> None:
+          self.property_list=[]
+          self.ValidUt=[]
+          self.Array3d=[]
+          self.StartProcess()
 
+     def StartProcess(self):
+          #self.GetData()
+          self.GetPropertyList()
+          self.EvaluateData()
+          self.Matrix()
 
-     def evaluateData(self, curentRelation):
-          if curentRelation.EndTime.day==com.Common_Time.Now.day:
-               return True
-          else:
-               return com.ProcesStatus.eval_false_data
           
-if __name__=="__main__":
-     # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
-     # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"
+     def GetPropertyList(self,):
+          response=self.GetData()
+          CheckObjResponse,objResponse=com.RequestHandler.CheckCmdResponseIsExist(response, com.CommonConfig.PropObj,com.CommonConfig.TypePropObj)
+          if CheckObjResponse==True:
+               for prop_data in objResponse:
+                    if isinstance(prop_data, dict):
+                                prop = Entity.Property(
+                                    id=prop_data.get('id'),
+                                    object_id=prop_data.get('object_id'),
+                                    field_id=prop_data.get('field_id'),
+                                    field_relation_id=prop_data.get('field_relation_id'),
+                                    prop_type=prop_data.get('type'),
+                                    UID=prop_data.get('UID'),
+                                    option=prop_data.get('option')
+                                )
+                                self.property_list.append(prop)
+                    else:
+                         print("Warning: Skipping non-dict item in finalObj")
+               #return property_list
 
-     SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
-     DesiUID = "0Y0G112O5TITL7OU6N8SJ2E5N4GV17S42"
+
+     def GetData(self,):
+          command = com.CommonConfig.getPropertyListCmd
+          response = com.RequestHandler.postRequest(com.CommonConfig.cmd_url, headers=com.CommonConfig.headers
+                                                         , data=json.dumps(command))
+          print(response)
+          return response
+
+     def EvaluateData(self):
+          for prop in self.property_list:
+                #print(type(prop.option))
+                if hasattr(prop, 'option') and prop.option not in [None, "NULL"]:
+                    option_data = json.loads(prop.option)
+                    if 'ut' in option_data:
+                         CheckRange=self.CheckUt(option_data['ut'])
+                         if CheckRange==True:
+                              self.ValidUt.append([prop.id,prop.UID,option_data['ut']])
+
+
+          print("self.ValidUt",self.ValidUt)
+          #print(type(self.ValidUt))
+                         # print(f"Property ID:  {prop.id}, Update Time (ut): {option_data['ut']}")
+          # if curentRelation.EndTime.day==com.Common_Time.Now.day:
+          #      return True
+          # else:
+          #      return com.ProcesStatus.eval_false_data
+     def CheckUt(self,ut_str):
+          ut_dateItime=com.Common_Time.ParseStringToDateTime(ut_str)
+          if isinstance(ut_dateItime, datetime) and ut_dateItime.date() == com.Common_Time.Now().date():
+               CurrentTime= com.Common_Time.Now()
+               NowSec=self.time_to_seconds(CurrentTime)
+               StartSecTime=NowSec-(IdealMinTime*60)
+
+               UtSecond=self.time_to_seconds(ut_dateItime)
+
+               if UtSecond<=NowSec and UtSecond>=StartSecTime:
+                return True
+                
+     
+     def Matrix(self):
+          num_items = len(self.ValidUt)
+          if len(self.ValidUt)>1:
+               for i in range (num_items):
+                    uid_i = self.ValidUt[i][1]
+                    for j in range(i+1,num_items):
+                         uid_j=self.ValidUt[j][1]
+                         print(f"Match found: UID {uid_i} {uid_j}")
+                         self.RelationStatus=V2RelationStatus(uid_i,uid_j,covarcnf)
+                         self.Array3d.append([uid_i,uid_j,self.RelationStatus.current_entity_relation.direction])
+
+
+          print(self.Array3d)
+     
+     
+     def time_to_seconds(self,date_time_str=None):
+          try:
+               if date_time_str is None:
+                    dt=datetime.now()
+               else:
+                    if not isinstance(date_time_str, str):
+                         date_time_str = str(date_time_str)
+                    dt = parser.parse(date_time_str)
+
+               return dt.hour * 3600 + dt.minute * 60 + dt.second
+          except (ValueError, parser.ParserError) as e:
+               print(f"Error parsing time string '{date_time_str}': {e}")
+               return None
+               
+if __name__=="__main__":
+
+     # SurceUID = "05A3V2270U1QS37ECU8CFJR7T4IB3GQ71"
+     # DesiUID = "T22LRCKDW3LL2J77560LD0382D3N5B10E"
 
      covarcnf=Entity.CovarCnf()
-     RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
 
-     print(RelationStatus.current_entity_relation)
+     RelationMatrix=V2RelationMatrix()
+     #RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
+
+     #print(RelationStatus.current_entity_relation)
      
-     # SurceUID = "HDB25SCC54Y32SD556VR6RD1S6N63KOH8"
-     # DesiUID = "38116L4OS4256W00S60GT08TIOV75L346"

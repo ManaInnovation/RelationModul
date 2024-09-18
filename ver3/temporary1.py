@@ -81,7 +81,7 @@ headers = {
 
 # Call fetch_property_list function to retrieve property list
 property_list = fetch_property_list(cmd_url, headers)
-
+print(type(property_list))
 # Process the retrieved property list if successful
 array=[]
 if property_list:
@@ -114,4 +114,4 @@ if property_list:
         print(prop)               # This will use the __str__ method of the Property class
 
 
-print(datetime.now().replace(microsecond=0))
+#print(datetime.now().replace(microsecond=0))
