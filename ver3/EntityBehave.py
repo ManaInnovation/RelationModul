@@ -486,8 +486,11 @@ class V2RelationStatus():
 
      def update1(self):
           self.last_entity_relation.CurentRelation.end_time=com.Common_Time.Now()
-          CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
-          self.current_entity_relation.SubjectList.append(CovarianceItem)
+          #lastcov=self.last_entity_relation.CurentRelation.SubjectList[-1].value
+
+          if self.last_entity_relation.CurentRelation.SubjectList[-1].value !=self.cov:
+               CovarianceItem = Entity.SubjectItem(name="Covariance", value=self.cov, type="float")
+               self.current_entity_relation.SubjectList.append(CovarianceItem)
           self.current_entity_relation.end_time=com.Common_Time.Now()
           self.last_entity_relation.CurentRelation=copy.deepcopy(self.current_entity_relation)
           self.MyBehave.Save(self.last_entity_relation)
