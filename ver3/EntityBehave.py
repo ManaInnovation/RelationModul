@@ -8,8 +8,11 @@ import copy
 from dateutil import parser
 import pickle
 import statistics
+import time
+import schedule
 
-IdealMinTime=1
+IdealMinTime=5
+
 
 class V2RelationBehave():
     def New(self,Surce,Desi):
@@ -17,7 +20,6 @@ class V2RelationBehave():
           path='D:/EachEntityRelation2'
           file_name = os.path.join(path, uid + '.json')
           if not os.path.exists(file_name):
-          #if(self.Get(Surce,Desi)==com.ProcesStatus.Null):
                new_relation = Entity.CurentEntityRelation(
                     start_time=com.Common_Time.Now(),  
                     end_time=com.Common_Time.Now(),    
@@ -43,67 +45,9 @@ class V2RelationBehave():
 
           return new_relation
 
-    def Update(self,CurentRelation):
-          #def active(none, passive):
-               if self. curentdirection==com.ProcesStatus.none:
-                    match self.direction: 
-                         case com.ProcesStatus.inactive:
-                              if CurentRelation. direction == com.ProcesStatus.inactive:
-                                   self.EndTime= CurentRelation.EndTime
-                                   #CurentRelation.status= com.ProcesStatus.passive
-                              elif CurentRelation. direction == com.ProcesStatus.disver or CurentRelation. direction == com.ProcesStatus.conver:
-                                   self.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-
-                         case com.ProcesStatus.conver:  #ghabl active bashe
-                              if CurentRelation. direction == com.ProcesStatus.inactive:
-                                   self.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-
-                                   self.status = com.ProcesStatus.passive
-                                   self.EndTime= CurentRelation.EndTime
-
-                              elif CurentRelation.direction==com.ProcesStatus.disver:
-                                   self.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-                                   self.status=com.ProcesStatus.active
-                                   self.EndTime= CurentRelation.EndTime
-
-                         case com.ProcesStatus.disver:
-                              if CurentRelation. direction == com.ProcesStatus.inactive:
-                                   self.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-
-                                   self.status = com.ProcesStatus.passive
-                                   self.EndTime= CurentRelation.EndTime
-
-                              elif CurentRelation.direction==com.ProcesStatus.conver:
-                                   self.direction_history.append({
-                                        "type": CurentRelation.direction,
-                                        "EndTime": CurentRelation.EndTime
-                                        })
-                                   self.status=com.ProcesStatus.active
-                                   self.EndTime= CurentRelation.EndTime
-
-          # if CurentRelation.direction == self.direction:
-          #     self.EndTime= CurentRelation.EndTime
-          # elif CurentRelation.direction!= self.direction:
-          #      self.direction_history.append({
-          #       "type": CurentRelation.direction,
-          #       "EndTime": CurentRelation.EndTime
-          #   })
     def Remove(self,UID):
         pass
-       
-    
+          
     def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
           if not os.path.exists(path):
                os.makedirs(path)
@@ -152,7 +96,6 @@ class V2RelationBehave():
 
                     data = json.load(file)
                
-
                     curent_relation_data = data.get('CurentRelation', {})
                     CurentRelation = self.reconstruct_curent_entity_relation(curent_relation_data) #dict to object
                     last_relation_data = data.get('LastRelation', [])
@@ -166,7 +109,6 @@ class V2RelationBehave():
                 CurentRelation=CurentRelation,
                 LastRelation=LastRelation
             )
-
          except FileNotFoundError:
                print(f"File not found: {file_name}")  # Debugging line
                last_entity_relation = com.ProcesStatus.Null
@@ -208,15 +150,14 @@ class V2RelationStatus():
           self.candidate_data=[]  
 
           self.MyBehave=V2RelationBehave()
+          #self.MyBehave.Star
           self.current_entity_relation=self.MyBehave.New(self.Surce,self.Desi)
           self.last_entity_relation=self.MyBehave.Get(self.Surce, self.Desi)
               
-          #self.IdealMinTime=1
-          self.StartProcess()
           
+          #self.StartProcess()
           
      def StartProcess(self):
-          #print("start process called")
           DataProperty1 = self.getData(self.Surce)
           DataProperty2 = self.getData(self.Desi)
 
@@ -227,15 +168,7 @@ class V2RelationStatus():
           self.covariance()
           self.create_current_relation_v1()
      
-     def StartProcess2(self,index):
-          tsom=0
-          for i in range(0, len(self.combined_data)):
-               if self.combined_data[i][index] is not None:
-                    tsom+=self.combined_data[i][index]
-          print(tsom)
-
-     def CheckData(PropOption):
-          pass  
+  
 
      def getData(self,uid):
           params = {"UID": uid,
@@ -245,19 +178,6 @@ class V2RelationStatus():
           #print(response)
           return response
      
-     def time_to_seconds(self,date_time_str=None):
-          try:
-               if date_time_str is None:
-                    dt=datetime.now()
-               else:
-                    if not isinstance(date_time_str, str):
-                         date_time_str = str(date_time_str)
-                    dt = parser.parse(date_time_str)
-
-               return dt.hour * 3600 + dt.minute * 60 + dt.second
-          except (ValueError, parser.ParserError) as e:
-               print(f"Error parsing time string '{date_time_str}': {e}")
-               return None
           
      def setDataToArray(self, data1, data2):
 
@@ -266,8 +186,8 @@ class V2RelationStatus():
 
      def FillArray(self, data, index):
           for entry in data:
-               et_seconds = self.time_to_seconds(entry.get('et'))
-               ut_seconds = self.time_to_seconds(entry.get('ut'))
+               et_seconds = com.Common_Time.time_to_seconds(entry.get('et'))
+               ut_seconds = com.Common_Time.time_to_seconds(entry.get('ut'))
                va = entry.get('va')
                if va is not None:
                     try:
@@ -287,13 +207,11 @@ class V2RelationStatus():
 
      def createSyncTimeFrame(self):
           CurrentTime= com.Common_Time.Now()
-          NowSec=self.time_to_seconds(CurrentTime)
+          NowSec=com.Common_Time.time_to_seconds(CurrentTime)
           len(self.combined_data)
           StartSecTime=NowSec-(IdealMinTime*60)
           return StartSecTime,NowSec
-          #self.syncdata=self.combined_data[StartSecTime:NowSec]
-          #return syncdata
-
+          
      def covariance(self):
         if not self.candidate_data:
           print("No data available for covariance calculation.")
@@ -321,8 +239,7 @@ class V2RelationStatus():
             multiply= ((DataProperty1[k]-avg1) * (DataProperty2[k]-avg2) )
             totalSum+= multiply
         self.cov= totalSum/(len(self.candidate_data)-1)
-        print("cov",self.cov)
-        #return cov
+        #print("cov",self.cov)
 
      def create_current_relation_v0(self):               
                if self.last_entity_relation == com.ProcesStatus.Null:
@@ -396,13 +313,13 @@ class V2RelationStatus():
                          self.update1()
 
      def direction_range(self):
-          if self.cov==None:
+          if self.cov == None:
                return Entity.RelationDirection.InActive
-          if self.cov> self.covarcnf.Convergent:
+          if self.cov >= self.covarcnf.Convergent:
                return Entity.RelationDirection.Convergent
-          if self.cov<-self.covarcnf.Divergent:
+          if self.cov <= self.covarcnf.Divergent:
                return Entity.RelationDirection.Divergent
-          else:
+          if self.covarcnf.Divergent<self.cov<self.covarcnf.Convergent:
                return Entity.RelationDirection.InActive
 
      def check_status(self):
@@ -506,7 +423,7 @@ class V2RelationMatrix():
           self.property_list=[]
           self.ValidUt=[]
           self.Array3d=[]
-          self.StartProcess()
+          #self.StartProcess()
 
      def StartProcess(self):
           #self.GetData()
@@ -540,12 +457,11 @@ class V2RelationMatrix():
           command = com.CommonConfig.getPropertyListCmd
           response = com.RequestHandler.postRequest(com.CommonConfig.cmd_url, headers=com.CommonConfig.headers
                                                          , data=json.dumps(command))
-          print(response)
+          #print(response)
           return response
 
      def EvaluateData(self):
           for prop in self.property_list:
-                #print(type(prop.option))
                 if hasattr(prop, 'option') and prop.option not in [None, "NULL"]:
                     option_data = json.loads(prop.option)
                     if 'ut' in option_data:
@@ -554,21 +470,16 @@ class V2RelationMatrix():
                               self.ValidUt.append([prop.id,prop.UID,option_data['ut']])
 
 
-          print("self.ValidUt",self.ValidUt)
-          #print(type(self.ValidUt))
-                         # print(f"Property ID:  {prop.id}, Update Time (ut): {option_data['ut']}")
-          # if curentRelation.EndTime.day==com.Common_Time.Now.day:
-          #      return True
-          # else:
-          #      return com.ProcesStatus.eval_false_data
+          #print("self.ValidUt",self.ValidUt)
+          
      def CheckUt(self,ut_str):
           ut_dateItime=com.Common_Time.ParseStringToDateTime(ut_str)
           if isinstance(ut_dateItime, datetime) and ut_dateItime.date() == com.Common_Time.Now().date():
                CurrentTime= com.Common_Time.Now()
-               NowSec=self.time_to_seconds(CurrentTime)
+               NowSec=com.Common_Time.time_to_seconds(CurrentTime)
                StartSecTime=NowSec-(IdealMinTime*60)
 
-               UtSecond=self.time_to_seconds(ut_dateItime)
+               UtSecond=com.Common_Time.time_to_seconds(ut_dateItime)
 
                if UtSecond<=NowSec and UtSecond>=StartSecTime:
                 return True
@@ -581,36 +492,106 @@ class V2RelationMatrix():
                     uid_i = self.ValidUt[i][1]
                     for j in range(i+1,num_items):
                          uid_j=self.ValidUt[j][1]
-                         print(f"Match found: UID {uid_i} {uid_j}")
+                         #print(f"Match found: UID {uid_i} {uid_j}")
                          self.RelationStatus=V2RelationStatus(uid_i,uid_j,covarcnf)
-                         self.Array3d.append([uid_i,uid_j,self.RelationStatus.current_entity_relation.direction])
+                         self.RelationStatus.StartProcess()
 
+                         self.Array3d.append([uid_i,uid_j,self.RelationStatus.current_entity_relation.direction])
 
           print(self.Array3d)
      
      
-     def time_to_seconds(self,date_time_str=None):
-          try:
-               if date_time_str is None:
-                    dt=datetime.now()
-               else:
-                    if not isinstance(date_time_str, str):
-                         date_time_str = str(date_time_str)
-                    dt = parser.parse(date_time_str)
 
-               return dt.hour * 3600 + dt.minute * 60 + dt.second
-          except (ValueError, parser.ParserError) as e:
-               print(f"Error parsing time string '{date_time_str}': {e}")
-               return None
-               
+# def Timer():
+#     start_time = datetime.time(6, 0, 0)  # 6:00 AM
+#     end_time = datetime.time(12, 0, 0)   # 12:00 PM (noon)
+
+#     while True:
+#         now = datetime.datetime.now()
+#         current_time = now.time()
+
+#         # Check if the current time is within the start and end time
+#         if start_time <= current_time <= end_time:
+#             print(f"Starting at {now}")
+            
+#             # Create and run the objects for each class
+#             RelationMatrix = V2RelationMatrix()  # Create V2RelationMatrix object
+#             RelationMatrix.run()  # Run the process for RelationMatrix
+
+#             RelationStatus = V2RelationStatus()  # Create V2RelationStatus object
+#             RelationStatus.run()  # Run the process for RelationStatus
+
+#             RelationBehave = V2RelationBehave()  # Create V2RelationBehave object
+#             RelationBehave.run()  # Run the process for RelationBehave
+
+#             # Sleep for 5 minutes (300 seconds) before the next run
+#             time.sleep(300)
+#         else:
+#             print("Outside the scheduled time range, waiting...")
+#             time.sleep(60)  # Sleep for 1 minute and check the time again
+
+#         # Break the loop after the end time has passed for the day
+#         if current_time > end_time:
+#             print(f"Ending the scheduled run at {now}")
+#             break       
+
+
+# def run_tasks():
+#     current_time = datetime.now()
+#     # Check if current time is between 6 AM and 12 PM
+#     if current_time.hour >= 6 and current_time.hour <= 12:
+#         print(f"Running tasks at {current_time}")
+        
+#         relation_behave = V2RelationBehave()
+#         relation_status = V2RelationStatus()
+#         relation_matrix = V2RelationMatrix()
+
+#         relation_behave.run('SourceID', 'DestinationID')
+#         relation_status.run()
+#         relation_matrix.run()
+#     else:
+#         print(f"Out of time range at {current_time}. Tasks not executed.")
+
+# # Schedule the task to run every 5 minutes
+# schedule.every(5).minutes.do(run_tasks)
+
+def run_tasks():
+    current_time = datetime.now()
+    start_time = datetime.now().replace(hour=14, minute=32, second=0, microsecond=0)  # Start time
+    end_time = datetime.now().replace(hour=14, minute=34, second=0, microsecond=0)    # End time
+
+    # Check if current time is within the allowed range
+    if start_time <= current_time <= end_time:
+        print(f"Running tasks at {current_time}")
+
+     #    relation_behave = V2RelationBehave()
+     #    relation_status = V2RelationStatus()
+        relation_matrix = V2RelationMatrix()
+        relation_matrix.StartProcess()
+    else:
+        print(f"Out of time range at {current_time}. Stopping the scheduler.")
+        return schedule.CancelJob  # This will stop the scheduling loop
+
+# Schedule the task to run every 1 minute
+job = schedule.every(1).minutes.do(run_tasks)
+
+
 if __name__=="__main__":
+     covarcnf=Entity.CovarCnf()
 
+     print("Scheduler started...")
+     while True:
+        schedule.run_pending() 
+        if job in schedule.jobs:
+            time.sleep(1)  # Keep checking for pending jobs every second
+        else:
+            print("Job cancelled. Exiting program.")
+            break  # Exit the loop and stop the program
      # SurceUID = "05A3V2270U1QS37ECU8CFJR7T4IB3GQ71"
      # DesiUID = "T22LRCKDW3LL2J77560LD0382D3N5B10E"
 
-     covarcnf=Entity.CovarCnf()
 
-     RelationMatrix=V2RelationMatrix()
+     #RelationMatrix=V2RelationMatrix()
      #RelationStatus=V2RelationStatus(SurceUID, DesiUID,covarcnf)
 
      #print(RelationStatus.current_entity_relation)

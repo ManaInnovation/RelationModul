@@ -48,6 +48,20 @@ class Common_Time():
         itime = datetime.now().replace(microsecond=0)
         return itime
     
+    def time_to_seconds(date_time_str=None):
+          try:
+               if date_time_str is None:
+                    dt=datetime.now()
+               else:
+                    if not isinstance(date_time_str, str):
+                         date_time_str = str(date_time_str)
+                    dt = parser.parse(date_time_str)
+
+               return dt.hour * 3600 + dt.minute * 60 + dt.second
+          except (ValueError, parser.ParserError) as e:
+               print(f"Error parsing time string '{date_time_str}': {e}")
+               return None
+    
     def ParseStringToDateTime(date_time_str):
         try:
             if not isinstance(date_time_str, str):
@@ -103,20 +117,6 @@ class RequestHandler():
                 print(f"Error: Expected a {type} in the {uniqueOBJ} data")
                 return False
 
-class timeFrame():
-    combined_data=[[None, None] for _ in range(86400)]
-
-    def checkDataIsList(self,data, list):
-        if not isinstance(data, list):
-            return ProcesStatus.not_accepted_format
-        else:
-            return True
-
-    def isNull(values1,values2):
-        if not values1 or not values2:
-            return False
-
-
 class calculation():
 
     def calculate_average(sum=None, length= None,values1=None):
@@ -137,19 +137,6 @@ class FileControl():
         file_path = f"{path}/{filename}.json"
         with open(file_path, 'w') as json_file:
             json.dump(formatted_data, json_file,indent=4)
-
-        
-    #     data = {
-    #     "id": frame.id,
-    #     "hashcode": frame.hashcode,
-    #     "start": frame.start.strftime("%m/%d/%Y %I:%M:%S %p"),
-    #     "end": frame.end.strftime("%m/%d/%Y %I:%M:%S %p"),
-    #     "Duration": str(frame.duration),
-    #     "Type": frame.type,
-    #     "SubjectList": [{"name": subj.name, "value": subj.value} for subj in frame.subject_list]
-    # }
-    # with open(filename, 'w') as f:
-    #     json.dump(frame_data, f, indent=4)
 
     def Savetext(path,file):
         pass
