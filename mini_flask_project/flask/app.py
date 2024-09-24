@@ -1,16 +1,18 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify,request
 import subprocess
 import os
+import logging
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-    return 'Hello from Flask!'
+#logging.basicConfig(level=logging.DEBUG)
+
+# @app.route('/')
+# def hello_world():
+#     return 'Hello from Flask!'
 
 @app.route('/run-program')
 def run_program():
-    
     program_env_python = 'C:/Users/win11/miniconda3/envs/myprogramenv/python.exe'
    
     program_script_path = 'D:/projects/Git_projects/RelationModul/mini_flask_project/ver3/EntityBehave.py'
@@ -20,4 +22,4 @@ def run_program():
     return jsonify({'stdout': result.stdout, 'stderr': result.stderr})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

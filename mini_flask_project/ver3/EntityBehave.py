@@ -466,8 +466,6 @@ class V2RelationMatrix():
                          if CheckRange==True:
                               self.ValidUt.append([prop.id,prop.UID,option_data['ut']])
 
-
-  
           
      def CheckUt(self,ut_str):
           ut_dateItime=com.Common_Time.ParseStringToDateTime(ut_str)
@@ -481,7 +479,6 @@ class V2RelationMatrix():
                if UtSecond<=NowSec and UtSecond>=StartSecTime:
                 return True
                 
-     
      def Matrix(self):
           num_items = len(self.ValidUt)
           if len(self.ValidUt)>1:
@@ -493,14 +490,27 @@ class V2RelationMatrix():
                          self.RelationStatus.StartProcess()
 
                          self.Array3d.append([uid_i,uid_j,self.RelationStatus.current_entity_relation.direction])
+                         self.SaveMatrix(self.Array3d)
 
           print(self.Array3d)
      
+     def SaveMatrix(self, Array3d , path='D:/EachEntityRelation3'):
+          #uid = com.Common_UID.new(Surce + Desi)
+          if not os.path.exists(path):
+               os.makedirs(path)
+          file_name = os.path.join(path ,'relationmatrix.json')
+          try:
+               with open(file_name, 'w') as file:
+                    json.dump(Array3d, file)
+          except IOError as e:
+               print(f"An error occurred while saving the matrix: {e}")
+          
+          #return CurentRelation
      
 def run_tasks():
     current_time = datetime.now()
-    start_time = datetime.now().replace(hour=14, minute=32, second=0, microsecond=0)  # Start time
-    end_time = datetime.now().replace(hour=14, minute=34, second=0, microsecond=0)    # End time
+    start_time = datetime.now().replace(hour=13, minute=49, second=0, microsecond=0)  # Start time
+    end_time = datetime.now().replace(hour=13, minute=52, second=0, microsecond=0)    # End time
 
   
     if start_time <= current_time <= end_time:
