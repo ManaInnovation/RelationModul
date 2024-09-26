@@ -1,0 +1,101 @@
+{
+    "uid": "26b8ed41-cd8c-536e-980b-3395f412a0d5",
+    "source": "1N8VC5FEKI854W4D7AW45G3A133H1770I",
+    "destination": "HDB25SCC54Y32SD556VR6RD1S6N63KOH8",
+    "config": "None",
+    "option": "None",
+    "CurentRelation": {
+        "start_time": "2024-09-19T11:43:35",
+        "end_time": "2024-09-26T12:01:56",
+        "direction": "InActive",
+        "status": "Pasive",
+        "SubjectList": [
+            {
+                "name": "Covariance",
+                "value": 0.0,
+                "type": "float"
+            }
+        ]
+    },
+    "LastRelation": [
+        {
+            "start_time": "2024-09-18T15:15:38",
+            "end_time": "2024-09-18T15:15:38",
+            "direction": "InActive",
+            "status": "null",
+            "SubjectList": []
+        },
+        {
+            "start_time": "2024-09-18T15:15:38",
+            "end_time": "2024-09-18T16:06:53",
+            "direction": "Divergent",
+            "status": "Active",
+            "SubjectList": [
+                {
+                    "name": "Covariance",
+                    "value": 0.0,
+                    "type": "float"
+                },
+                {
+                    "name": "Covariance",
+                    "value": 0.0,
+                    "type": "float"
+                },
+                {
+                    "name": "Covariance",
+                    "value": 0.0,
+                    "type": "float"
+                },
+                {
+                    "name": "Covariance",
+                    "value": 0.0,
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "start_time": "2024-09-18T16:06:53",
+            "end_time": "2024-09-18T16:08:38",
+            "direction": "Convergent",
+            "status": "Active",
+            "SubjectList": [
+                {
+                    "name": "Covariance",
+                    "value": 535.5,
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "start_time": "2024-09-18T16:08:38",
+            "end_time": "2024-09-18T16:09:19",
+            "direction": "InActive",
+            "status": "Pasive",
+            "SubjectList": [
+                {
+                    "name": "Covariance",
+                    "value": null,
+                    "type": "float"
+                },
+                {
+                    "name": "Covariance",
+                    "value": null,
+                    "type": "float"
+                }
+            ]
+        },
+        {
+            "start_time": "2024-09-18T16:09:19",
+            "end_time": "2024-09-19T11:43:35",
+            "direction": "Divergent",
+            "status": "Active",
+            "SubjectList": [
+                {
+                    "name": "Covariance",
+                    "value": 0.0,
+                    "type": "float"
+                }
+            ]
+        }
+    ]
+}
