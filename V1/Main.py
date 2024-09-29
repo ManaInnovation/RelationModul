@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route('/run-command', methods=['POST'])
 def run_command():
     command = request.json.get('command')
-    print(f"Received command: {command}")  # Print the received command
+    print(f"Received command: {command}")  
     if not command:
         return jsonify({"error": "No command provided"}), 400
 
@@ -15,7 +15,7 @@ def run_command():
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output = result.stdout
         error = result.stderr
-        print(f"Command output: {output}")  # Print the command output
+        print(f"Command output: {output}")  
         return jsonify({
             "command": command,
             "output": output,
@@ -23,7 +23,7 @@ def run_command():
         })
 
     except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {str(e)}")  # Print the error message
+        print(f"Error executing command: {str(e)}")  
         return jsonify({
             "command": command,
             "error": str(e),
