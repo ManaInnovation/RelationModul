@@ -545,7 +545,10 @@ covarcnf=Entity.CovarCnf()
 #      # DesiUID = "T22LRCKDW3LL2J77560LD0382D3N5B10E"
 
 
+if __name__=="__main__":
+      # covarcnf=Entity.CovarCnf()
 
+<<<<<<< HEAD
 if __name__=="__main__":
 #      # covarcnf=Entity.CovarCnf()
 
@@ -554,3 +557,11 @@ if __name__=="__main__":
      relation_matrix.StartProcess()
 
           
+=======
+       print("Scheduler started...")
+       relation_matrix = V2RelationMatrix()
+       relation_matrix.StartProcess()
+       print( relation_matrix.Array3d)
+
+     
+>>>>>>> 13b4f77 (Remove __pycache__ from tracking and add to .gitignore)
