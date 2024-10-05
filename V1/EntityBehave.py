@@ -545,12 +545,10 @@ covarcnf=Entity.CovarCnf()
 #      # DesiUID = "T22LRCKDW3LL2J77560LD0382D3N5B10E"
 
 
-
 if __name__=="__main__":
-#      # covarcnf=Entity.CovarCnf()
+      # covarcnf=Entity.CovarCnf()
 
 #      # print("Scheduler started...")
      relation_matrix = V2RelationMatrix()
      relation_matrix.StartProcess()
 
-          

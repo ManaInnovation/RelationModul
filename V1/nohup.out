@@ -1,0 +1,181 @@
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+127.0.0.1 - - [26/Sep/2024 07:44:02] "[31m[1mPOST /run-program HTTP/1.1[0m" 405 -
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 279-466-531
+176.65.252.230 - - [26/Sep/2024 09:31:41] "[31m[1mPOST /run-program HTTP/1.1[0m" 405 -
+198.235.24.10 - - [26/Sep/2024 11:13:59] "[33mGET / HTTP/1.1[0m" 404 -
+147.185.132.119 - - [26/Sep/2024 18:46:10] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x053¾')
+147.185.132.119 - - [26/Sep/2024 18:46:10] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03\x053¾[0m" HTTPStatus.BAD_REQUEST -
+147.185.132.119 - - [26/Sep/2024 18:46:10] code 400, message Bad request version ('À(À$À\x14À')
+147.185.132.119 - - [26/Sep/2024 18:46:10] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03!^n*èl[E±Ä¾u53ñ0´9èÉáÑe:\x1a7\x8afTà\x09÷\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+147.185.132.147 - - [26/Sep/2024 22:28:06] "[33mGET / HTTP/1.1[0m" 404 -
+45.84.89.2 - - [27/Sep/2024 03:23:08] code 400, message Bad request version ('\x00\x04\x03\x00\x01\x02\x00')
+45.84.89.2 - - [27/Sep/2024 03:23:08] "[35m[1m\x16\x03\x01\x00\x85\x01\x00\x00\x81\x03\x03UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU\x00\x00\x06À0\x00\x9c\x00\x9d\x01\x00\x00R\x00\x0b\x00\x04\x03\x00\x01\x02\x00[0m" HTTPStatus.BAD_REQUEST -
+154.213.187.76 - - [27/Sep/2024 04:34:03] code 400, message Bad request syntax ('JDWP-Handshake')
+154.213.187.76 - - [27/Sep/2024 04:34:03] "[35m[1mJDWP-Handshake[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 10:31:39] code 400, message Bad request syntax ('\x04\x01\x00\x19h/\x12á\x00')
+80.66.83.114 - - [27/Sep/2024 10:31:39] "[35m[1m\x04\x01\x00\x19h/\x12á\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 10:32:39] code 400, message Bad request syntax ('\x05\x01\x00')
+80.66.83.114 - - [27/Sep/2024 10:32:39] "[35m[1m\x05\x01\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 10:32:39] "[33mCONNECT hotmail-com.olc.protection.outlook.com:25 HTTP/1.1[0m" 404 -
+80.66.83.114 - - [27/Sep/2024 10:34:05] code 400, message Bad HTTP/0.9 request type ('\x04\x01\x00\x194e\x84')
+80.66.83.114 - - [27/Sep/2024 10:34:05] "[35m[1m\x04\x01\x00\x194e\x84\x1f\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 10:35:05] code 400, message Bad request syntax ('\x05\x01\x00')
+80.66.83.114 - - [27/Sep/2024 10:35:05] "[35m[1m\x05\x01\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 10:35:05] "[33mCONNECT hotmail-com.olc.protection.outlook.com:25 HTTP/1.1[0m" 404 -
+47.251.8.45 - - [27/Sep/2024 13:08:40] code 400, message Bad request version ('À\x13À')
+47.251.8.45 - - [27/Sep/2024 13:08:40] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03I\x06²ù¼\x99iÀYûøºe-\x83Ud]\x0e\x8d·b8´gÆÝ9dZ8f gÁ\x81i³öòË°©\x19NÖ½\x95g|püé<Z¡\x90T·é¥8'O;\x00&À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+47.251.8.45 - - [27/Sep/2024 13:08:51] "[33mGET / HTTP/1.1[0m" 404 -
+45.15.17.3 - - [27/Sep/2024 13:09:34] "[33mGET / HTTP/1.1[0m" 404 -
+80.66.83.114 - - [27/Sep/2024 13:19:04] code 400, message Bad HTTP/0.9 request type ('\x04\x01\x00PUÎ')
+80.66.83.114 - - [27/Sep/2024 13:19:04] "[35m[1m\x04\x01\x00PUÎ s\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 13:20:04] code 400, message Bad request syntax ('\x05\x01\x00')
+80.66.83.114 - - [27/Sep/2024 13:20:04] "[35m[1m\x05\x01\x00[0m" HTTPStatus.BAD_REQUEST -
+80.66.83.114 - - [27/Sep/2024 13:20:04] "[33mCONNECT 85.206.160.115:80 HTTP/1.1[0m" 404 -
+23.239.31.175 - - [27/Sep/2024 13:41:54] "[33mGET / HTTP/1.0[0m" 404 -
+205.210.31.53 - - [27/Sep/2024 19:36:09] "[33mGET / HTTP/1.0[0m" 404 -
+45.84.89.3 - - [28/Sep/2024 01:49:47] "[33mGET / HTTP/1.0[0m" 404 -
+147.185.133.79 - - [28/Sep/2024 02:36:06] code 400, message Bad request syntax ('\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03l\x03å:Åc¼\x8b')
+147.185.133.79 - - [28/Sep/2024 02:36:06] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03l\x03å:Åc¼\x8b[0m" HTTPStatus.BAD_REQUEST -
+147.185.133.79 - - [28/Sep/2024 02:36:06] code 400, message Bad HTTP/0.9 request type ("\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03¯R\x8cUøKHõp^Eùñ@ÛS¶}\x843\x905&¼¬{µ\x83;±jç\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À")
+147.185.133.79 - - [28/Sep/2024 02:36:06] "[35m[1m\x16\x03\x01\x00Ê\x01\x00\x00Æ\x03\x03¯R\x8cUøKHõp^Eùñ@ÛS¶}\x843\x905&¼¬{µ\x83;±jç\x00\x00hÌ\x14Ì\x13À/À+À0À,À\x11À\x07À'À#À\x13À\x09À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+154.213.185.206 - - [28/Sep/2024 03:59:30] code 400, message Bad request syntax ('JDWP-Handshake')
+154.213.185.206 - - [28/Sep/2024 03:59:30] "[35m[1mJDWP-Handshake[0m" HTTPStatus.BAD_REQUEST -
+173.230.155.234 - - [28/Sep/2024 04:17:05] "[33mGET / HTTP/1.1[0m" 404 -
+167.71.131.109 - - [28/Sep/2024 06:27:10] code 400, message Bad request version (';®ÈFt')
+167.71.131.109 - - [28/Sep/2024 06:27:10] "[35m[1m\x16\x03\x03\x01\x9c\x01\x00\x01\x98\x03\x03lÓ±K8UQ{\x9d\x1b§Å\x18\x04\x8cÛAåW\x7f\x11I¡\x90QXªU%\x93ª¡ b\x80ú\x89{ä\x0bègÓó\x09;®ÈFt[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:10] code 400, message Bad request version ('À\x9c\x00<\x00/\x00')
+167.71.131.109 - - [28/Sep/2024 06:27:10] "[35m[1m\x16\x03\x03\x01\x9c\x01\x00\x01\x98\x03\x03AO\x8d^V\x97ò\x12\x85\x8bi8°j\x16áïL C@\x13Tþ\x1ai\x1eú4\x94uj ©yõ|Q\x05\x90\x10KUd8\x9dçÄ1bT\x91É0c$<¸\x0c\x92Ø§Ô$\x92\x00\x8cJJ\x00\x05\x00\x04\x00\x07\x00À\x00\x84\x00º\x00A\x00\x9dÀ¡À\x9d\x00=\x005\x00\x9cÀ À\x9c\x00<\x00/\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ('s¥ôs\x87Ô5bIù,\x9a_\x9a\x05À)\x0f\x00HªªÀ\x12À\x07Ì\x14\x13\x01\x13\x02Ì©ÀsÀrÀ,À¯À\xadÀ$À')
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x03\x01X\x01\x00\x01T\x03\x031ô\x97\x84B¿O{¾\x98ä©1\x13\x05y?B\x1a3_ÌA9\x9f\x9d\x033Á\x02\x0d° \x0d\x86E®\x0bæ\x0bõfÑ\x1d\x12ö\x0cs¥ôs\x87Ô5bIù,\x9a_\x9a\x05À)\x0f\x00HªªÀ\x12À\x07Ì\x14\x13\x01\x13\x02Ì©ÀsÀrÀ,À¯À­À$À[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ("\x00FjjÀ\x13À'À/À\x14À(À0À`ÀaÀvÀwÌ¨\x13\x05\x13\x04\x13\x03Ì\x13À\x11\x00")
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x03\x01J\x01\x00\x01F\x03\x03s×Vù2q\x93\x01¯\x8a\x0dB\x84aXì6FÎ\x87RaÁ¹d[Ì\x8b\x04,í\x87 \x19tq\x83\x90:\x07´\x8eD\x1f\x06l\x11ÓgÀ\x0dDEÜs*/\x09öa»xî\x16 \x00FjjÀ\x13À'À/À\x14À(À0À`ÀaÀvÀwÌ¨\x13\x05\x13\x04\x13\x03Ì\x13À\x11\x00[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ("Cuµ¦IøF\x8d~y\x17>hÎ¸Çä\x0eÎ1M\x975øýÛé\x8f\x82Ü·[\x00\x8aÀ\x12À\x13À\x07À'Ì\x14À/\x13\x01À\x14\x13\x02À(Ì©À0ÀsÀ`ÀrÀaÀ,ÀvÀ¯ÀwÀ\xadÌ¨À$\x13\x05À")
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x03\x01s\x01\x00\x01o\x03\x03ÉªëJ\x09\x86\x067\x94hÿ\x91Ä@×Eª\x92HëIÉ¡;\x9a(Ò\x95*vyû Cuµ¦IøF\x8d~y\x17>hÎ¸Çä\x0eÎ1M\x975øýÛé\x8f\x82Ü·[\x00\x8aÀ\x12À\x13À\x07À'Ì\x14À/\x13\x01À\x14\x13\x02À(Ì©À0ÀsÀ`ÀrÀaÀ,ÀvÀ¯ÀwÀ­Ì¨À$\x13\x05À[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ('À#À¬À®À+À')
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x02\x01\x9c\x01\x00\x01\x98\x03\x02\x90\x8e­|\x0f\x93\x1e\x8b{H¦l"\\/s¿%ÑÕ(ÁyEùðSlu\x90\x8b¨ E\x06È/&cé\x0b­¿\x9d\x1a\x89µÝ}ý]«c¶G>jÊÂÚ-Ø1\x03\x16\x00\x8cºº\x00\x16\x003\x00gÀ\x9eÀ¢\x00\x9e\x009\x00kÀ\x9fÀ£\x00\x9f\x00E\x00¾\x00\x88\x00Ä\x00\x9aÀ\x08À\x09À#À¬À®À+À[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ('¨¸\x94«uq-±f')
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x01\x01©\x01\x00\x01¥\x03\x03Ò\x17ÉÎz\x08"Ô¯æ\x83\x0b\x14Ê\x1e \x9298¯\x8c)\x1f>\x1cI»îªÉ\x9d\x9f ¨¸\x94«uq-±f[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request syntax ('\x16\x03\x01\x01©\x01\x00\x01¥\x03\x039ÌÕ\x80\\¦àdí!èj')
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x01\x01©\x01\x00\x01¥\x03\x039ÌÕ\x80\\¦àdí!èj[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:11] code 400, message Bad request version ('ÂXô\x13-æL\x95Ø²\x00\x82')
+167.71.131.109 - - [28/Sep/2024 06:27:11] "[35m[1m\x16\x03\x01\x01\x9f\x01\x00\x01\x9b\x03\x03IªBËwC"w©ùû«ÍK\x90\x8b.\x19¥òg¤òBÏ7á\x85\x08..V q\x0e\x84×\x9càãr¶\x9e\x9ea^O Láú£xÏ\x1fÂXô\x13-æL\x95Ø²\x00\x82[0m" HTTPStatus.BAD_REQUEST -
+167.71.131.109 - - [28/Sep/2024 06:27:12] code 400, message Bad request version ("¹6*\x00\x8aÀ\x12À\x13À\x07À'Ì\x14À/\x13\x01À\x14\x13\x02À(Ì©À0ÀsÀ`ÀrÀaÀ,ÀvÀ¯ÀwÀ\xadÌ¨À$\x13\x05À")
+167.71.131.109 - - [28/Sep/2024 06:27:12] "[35m[1m\x16\x03\x01\x01\x8e\x01\x00\x01\x8a\x03\x03ü®\x89V6òÙ\x944\x19í¾¤ÈÏ9náf\x01\x140V¸å\x17°z¬º\x1dK ç\\Ua±\x83Ô\x96§\x86ôÄÈ\x03&½½`Ö\x177ÞzT´b|Ì\x1e¹6*\x00\x8aÀ\x12À\x13À\x07À'Ì\x14À/\x13\x01À\x14\x13\x02À(Ì©À0ÀsÀ`ÀrÀaÀ,ÀvÀ¯ÀwÀ­Ì¨À$\x13\x05À[0m" HTTPStatus.BAD_REQUEST -
+205.210.31.204 - - [28/Sep/2024 08:04:14] "[33mGET / HTTP/1.1[0m" 404 -
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+Address already in use
+Port 5000 is in use by another program. Either identify and stop that program, or start the server with a different port.
+ * Serving Flask app 'Main'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.31.37.124:5000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 856-951-823
+176.65.252.230 - - [28/Sep/2024 09:42:24] "GET /run-program HTTP/1.1" 200 -
+176.65.252.230 - - [28/Sep/2024 09:42:24] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+138.68.140.214 - - [28/Sep/2024 11:08:44] code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x01û\x01\x00\x01÷\x03\x03"\x97lÆk')
+138.68.140.214 - - [28/Sep/2024 11:08:44] "[35m[1m\x16\x03\x01\x01û\x01\x00\x01÷\x03\x03"\x97lÆk ²\x81Rv[DÁÂ,QkèenÞÉqøÏ1Xÿ\x91ÃÔ\x12\x00\x01<Ì\x14Ì\x13Ì\x15À0À,À(À$À\x14À[0m" HTTPStatus.BAD_REQUEST -
+205.210.31.16 - - [28/Sep/2024 11:26:33] "[33mGET / HTTP/1.0[0m" 404 -
+176.65.252.230 - - [28/Sep/2024 13:19:02] "GET /run-program HTTP/1.1" 200 -
+176.65.252.230 - - [28/Sep/2024 13:33:21] "GET /run-program HTTP/1.1" 200 -
+ * Detected change in '/home/ubuntu/RelationModul/V1/EntityBehave.py', reloading
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/home/ubuntu/RelationModul/V1/Main.py", line 5, in <module>
+    import EntityBehave
+  File "/home/ubuntu/RelationModul/V1/EntityBehave.py", line 549
+    if __name__=="__main__":
+IndentationError: unexpected indent
