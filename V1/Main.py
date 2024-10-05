@@ -1,7 +1,8 @@
 from flask import Flask, jsonify, request
 import subprocess
 import os
-import EntityBehave
+import psutil  # To check if the process is running
+
 app = Flask(__name__)
 
 # Variable to track the program status (whether it's running or not)
@@ -23,12 +24,23 @@ def run_command():
             return jsonify({"message": "Program is already running", "status": "running"})
         else:
             try:
-                # Replace 'your_program.py' with the actual program you want to run
-                process = subprocess.Popen(["python3", EntityBehave.py], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # Start the EntityBehave program as a subprocess
+                process = subprocess.Popen(["python3", "EntityBehave.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 program_status = "running"
                 return jsonify({"message": "Program started successfully", "status": "running"})
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
+
+    elif command == 'check-status':
+        if program_status == "running":
+            if process.poll() is None:  # Process is still running
+                return jsonify({"message": "Program is running", "status": "running"})
+            else:  # Process has terminated
+                program_status = "stopped"
+                process = None
+                return jsonify({"message": "Program is not running anymore", "status": "stopped"})
+        else:
+            return jsonify({"message": "Program is not running", "status": "stopped"})
 
     elif command == 'stop-program':
         if program_status == "stopped":
@@ -36,7 +48,8 @@ def run_command():
         else:
             try:
                 if process is not None:
-                    process.terminate() 
+                    process.terminate()  # Terminate the process
+                    process.wait()  # Wait for the process to finish
                     process = None
                     program_status = "stopped"
                 return jsonify({"message": "Program stopped successfully", "status": "stopped"})
@@ -45,7 +58,6 @@ def run_command():
 
     elif command == 'git-update':
         try:
-          
             result = subprocess.run(['git', 'pull'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             return jsonify({"message": "Git update performed", "output": result.stdout, "error": result.stderr})
         except Exception as e:
