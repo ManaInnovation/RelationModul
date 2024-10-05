@@ -546,11 +546,11 @@ covarcnf=Entity.CovarCnf()
 
 
 
-# if __name__=="__main__":
+if __name__=="__main__":
 #      # covarcnf=Entity.CovarCnf()
 
 #      # print("Scheduler started...")
-#      relation_matrix = V2RelationMatrix()
-#      relation_matrix.StartProcess()
+     relation_matrix = V2RelationMatrix()
+     relation_matrix.StartProcess()
 
-     
+          

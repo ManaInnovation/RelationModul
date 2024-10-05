@@ -1,34 +1,34 @@
 import requests
-import argparse
 import json
 
-def run_command(command):
-    url = 'http://13.38.16.203:6000/run-command'
+def send_command_to_server(command):
+    url = 'http://13.38.16.203:6000/run-command'  # Your Flask server's URL
     data = {'command': command}
-    response = requests.post(url, json=data)
 
-    # Print the status code and response text
-    print("Status Code:", response.status_code)
-    print("Response Text:", response.text)
+    try:
+        # Send command to Flask server
+        response = requests.post(url, json=data)
 
-    # If the response is successful, decode the JSON
-    if response.ok:
-        print(response.json())
-    else:
-        return {'error': f'Failed to execute command: {response.status_code}', 'output': ''}
-def main():
-    # Set up argument parsing
-    parser = argparse.ArgumentParser(description='Run a command on the server and return the output in JSON format.')
-    parser.add_argument('command', type=str, help='The command to execute on the server.')
-    
-    # Parse arguments
-    args = parser.parse_args()
-    
-    # Run the command and get the output
-    result = run_command(args.command)
-    
-    # Print the result as a JSON string
-    print(json.dumps(result, indent=4))
+        # Check for a valid response
+        if response.status_code == 200:
+            print(f"Command '{command}' executed successfully.")
+            return response.json()  # Return the response in JSON format
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return {'error': f"Failed to execute command: {command}"}
 
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {str(e)}")
+        return {'error': f"Request failed: {str(e)}"}
+
+# Simulate a terminal where you can input commands
 if __name__ == '__main__':
-    main()
+    while True:
+        command = input("Enter a command (e.g., 'run-program', 'git-update'): ")
+
+        if command == 'exit':
+            break
+        
+        # Send the entered command to the Flask server
+        result = send_command_to_server(command)
+        print(json.dumps(result, indent=4))  # Pretty-print the response
