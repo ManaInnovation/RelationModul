@@ -26,15 +26,16 @@ class ControlReturn():
 
 
 class CommonConfig():
-    objvalue_url="http://www.asset23d.ir/api/OBJVALUE"
-    base_url="http://www.asset23d.ir/api/"
-    cmd_url = "http://www.asset23d.ir/api/CMD"
-    headers = {
-    "Content-Type": "application/json"
-}
-    getPropertyListCmd={"cmd": "get_all_property_list"}
-    PropObj="finalObj"
-    TypePropObj=list
+    # objvalue_url="http://www.asset23d.ir/api/OBJVALUE"
+        base_url="http://www.asset23d.ir/api/"
+        objvalue_url= base_url +"OBJVALUE"
+        cmd_url = base_url+"CMD"
+        headers = {
+        "Content-Type": "application/json"
+        }
+        getPropertyListCmd={"cmd": "get_all_property_list"}
+        PropObj="finalObj"
+        TypePropObj=list
     
 
 

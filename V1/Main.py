@@ -1,44 +1,38 @@
 from flask import Flask, jsonify, request
 import subprocess
+import EntityBehave
 import os
-import psutil  # To check if the process is running
+
 
 app = Flask(__name__)
 
-# Variable to track the program status (whether it's running or not)
+
 program_status = "stopped"
-process = None  # To store the process handle of the running program
+process = None  
 
 @app.route('/run-command', methods=['POST'])
 def run_command():
-    global program_status, process  # Access the global variable for program status
+    global program_status, process
     command = request.json.get('command')
-    print(f"Received command: {command}")  # Print the received command
-    
-    if not command:
-        return jsonify({"error": "No command provided"}), 400
+    CurentURL = request.json.get('URL')
 
-    # Handle special commands
     if command == 'run-program':
         if program_status == "running":
             return jsonify({"message": "Program is already running", "status": "running"})
         else:
             try:
-                # Start the EntityBehave program as a subprocess
-                process = subprocess.Popen(["python3", "EntityBehave.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                
+                EntityBehave.run_entity_behave(CurentURL)
+                #process = subprocess.Popen(["python3", "./EntityBehave.py"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                
                 program_status = "running"
                 return jsonify({"message": "Program started successfully", "status": "running"})
             except Exception as e:
                 return jsonify({"error": str(e)}), 500
-
+            
     elif command == 'check-status':
         if program_status == "running":
-            if process.poll() is None:  # Process is still running
-                return jsonify({"message": "Program is running", "status": "running"})
-            else:  # Process has terminated
-                program_status = "stopped"
-                process = None
-                return jsonify({"message": "Program is not running anymore", "status": "stopped"})
+            return jsonify({"message": "Program is running", "status": "running"})
         else:
             return jsonify({"message": "Program is not running", "status": "stopped"})
 
@@ -46,15 +40,8 @@ def run_command():
         if program_status == "stopped":
             return jsonify({"message": "Program is not running", "status": "stopped"})
         else:
-            try:
-                if process is not None:
-                    process.terminate()  # Terminate the process
-                    process.wait()  # Wait for the process to finish
-                    process = None
-                    program_status = "stopped"
-                return jsonify({"message": "Program stopped successfully", "status": "stopped"})
-            except Exception as e:
-                return jsonify({"error": str(e)}), 500
+            program_status = "stopped"
+            return jsonify({"message": "Program stopped successfully", "status": "stopped"})
 
     elif command == 'git-update':
         try:
@@ -64,7 +51,7 @@ def run_command():
             return jsonify({"error": str(e)}), 500
 
     elif command == 'git-clone':
-        # Example: Cloning a repository (change the URL as needed)
+        
         repo_url = 'https://github.com/your/repository.git'
         try:
             result = subprocess.run(['git', 'clone', repo_url], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -72,12 +59,11 @@ def run_command():
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
-    # If command does not match any specific case, run it as a generic shell command
     try:
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         output = result.stdout
         error = result.stderr
-        print(f"Command output: {output}")  # Print the command output
+        print(f"Command output: {output}")  
         return jsonify({
             "command": command,
             "output": output,
@@ -85,7 +71,7 @@ def run_command():
         })
 
     except subprocess.CalledProcessError as e:
-        print(f"Error executing command: {str(e)}")  # Print the error message
+        print(f"Error executing command: {str(e)}")  
         return jsonify({
             "command": command,
             "error": str(e),
