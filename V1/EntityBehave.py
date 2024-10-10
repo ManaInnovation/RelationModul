@@ -532,7 +532,6 @@ covarcnf=Entity.CovarCnf()
 
 # if __name__=="__main__":
 #      covarcnf=Entity.CovarCnf()
-
 #      print("Scheduler started...")
 #      while True:
 #         schedule.run_pending() 
@@ -543,17 +542,12 @@ covarcnf=Entity.CovarCnf()
 #             break  # Exit the loop and stop the program
 #      # SurceUID = "05A3V2270U1QS37ECU8CFJR7T4IB3GQ71"
 #      # DesiUID = "T22LRCKDW3LL2J77560LD0382D3N5B10E"
-
 def run_entity_behave(curentUIL):
      com.CommonConfig.base_url = curentUIL
      relation_matrix = V2RelationMatrix()
      relation_matrix.StartProcess()
 
 
-if __name__=="__main__":
-      # covarcnf=Entity.CovarCnf()
-     run_entity_behave()
-#      # print("Scheduler started...")
-     #relation_matrix = V2RelationMatrix()
-     #relation_matrix.StartProcess()
-
+# if __name__=="__main__":
+   
+#      run_entity_behave(curentUIL)
