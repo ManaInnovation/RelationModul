@@ -11,12 +11,12 @@ app = Flask(__name__)
 def run_program():
     try:
         # Retrieve the URL from the request body (use default if not provided)
-        curentUIL = request.json.get('url')
+        curentURL = request.json.get('url')
         
         # Run the program
-        EntityBehave.run_entity_behave(curentUIL)
+        EntityBehave.run_entity_behave(curentURL)
 
-        return jsonify({"message": "Program started successfully with URL: {}".format(curentUIL), "status": "running"})
+        return jsonify({"message": "Program started successfully with URL: {}".format(curentURL), "status": "running"})
     
     except Exception as e:
         return jsonify({"error": "Failed to run the program", "details": str(e)}), 500
