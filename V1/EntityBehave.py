@@ -10,6 +10,8 @@ import pickle
 import statistics
 import time
 import schedule
+import base64
+import requests
 
 IdealMinTime=5
 
@@ -48,7 +50,7 @@ class V2RelationBehave():
     def Remove(self,UID):
         pass
           
-    def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
+    def Savev0(self, CurentRelation , path='D:/EachEntityRelation2'):
           # if not os.path.exists(path):
           #      os.makedirs(path)
           dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -56,6 +58,44 @@ class V2RelationBehave():
           with open(file_name, 'w') as file:
                json.dump(CurentRelation, file, default=self.default_serializer,indent=4)
      
+          return CurentRelation
+    
+    def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
+          # if not os.path.exists(path):
+          #      os.makedirs(path)
+          dir_path = os.path.dirname(os.path.realpath(__file__))
+          file_name = os.path.join(dir_path, CurentRelation.uid + '.json')
+          json_data = json.dumps(CurentRelation, default=self.default_serializer, indent=4)
+
+          # Encode the JSON string in base64
+          base64_encoded = base64.b64encode(json_data.encode()).decode()
+
+          # Prepare the JSON payload for the POST request
+          payload = {
+               "cmd": "StoreFile",
+               "folder": "objrelation",
+               "base64": base64_encoded,
+               "control": "True",
+               "filename": f"{CurentRelation.uid}.json",  # Use the uid as the filename
+               "filetype": "json",
+               "action": "write"  # Corrected to "write" for saving the file
+          }
+
+          # Construct the full URL for the API endpoint
+          api_url = f"{com.CommonConfig.base_url}/CMD"
+
+          try:
+               # Send the POST request to the API
+               response = requests.post(api_url, json=payload)
+
+               # Check the response status code
+               if response.status_code == 200:
+                    print(f"CurentRelation data successfully saved to the server with filename: {CurentRelation.uid}.json")
+               else:
+                    print(f"Failed to save CurentRelation data. Server responded with status code {response.status_code}: {response.text}")
+          except requests.RequestException as e:
+               print(f"An error occurred while sending the request to the server: {e}")
+
           return CurentRelation
     
     def default_serializer(self, obj, seen=None):
@@ -491,11 +531,11 @@ class V2RelationMatrix():
                          self.RelationStatus.StartProcess()
 
                          self.Array3d.append([uid_i,uid_j,self.RelationStatus.current_entity_relation.direction])
-                         self.SaveMatrix(self.Array3d)
+                         self.SaveMatrix(self.Array3d,com.CommonConfig.base_url)
 
           # print(self.Array3d)
      
-     def SaveMatrix(self, Array3d , path='D:/EachEntityRelation3'):
+     def SaveMatrixv0(self, Array3d , path='D:/EachEntityRelation3'):
           #uid = com.Common_UID.new(Surce + Desi)
           dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -509,6 +549,37 @@ class V2RelationMatrix():
                print(f"An error occurred while saving the matrix: {e}")
           
           #return CurentRelation
+     def SaveMatrix(self, Array3d ,url, path='D:/EachEntityRelation3'):
+          #uid = com.Common_UID.new(Surce + Desi)
+          dir_path = os.path.dirname(os.path.realpath(__file__))
+
+          # if not os.path.exists(path):
+          #      os.makedirs(path)
+          file_name = os.path.join(dir_path ,'relationmatrix.json')
+          json_data = json.dumps(Array3d)
+          base64_encoded = base64.b64encode(json_data.encode()).decode()
+          payload = {
+        "cmd": "StoreFile",
+        "folder": "objrelation",
+        "base64": base64_encoded,
+        "control": "True",
+        "filename": file_name,
+        "filetype": "json",
+        "action": "write"
+          }
+          api_url = f"{url}/CMD"
+          try:
+               # Send the POST request to the API
+               response = requests.post(api_url, json=payload)
+
+               # Check the response status code
+               if response.status_code == 200:
+                    print("Matrix data successfully saved to the server.")
+               else:
+                    print(f"Failed to save matrix data. Server responded with status code {response.status_code}: {response.text}")
+          except requests.RequestException as e:
+               print(f"An error occurred while sending the request to the server: {e}")
+
      
 def run_tasks():
     current_time = datetime.now()
