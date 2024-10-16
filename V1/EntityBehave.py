@@ -552,7 +552,6 @@ class V2RelationMatrix():
      def SaveMatrix(self, Array3d ,url, path='D:/EachEntityRelation3'):
           #uid = com.Common_UID.new(Surce + Desi)
           dir_path = os.path.dirname(os.path.realpath(__file__))
-
           # if not os.path.exists(path):
           #      os.makedirs(path)
           file_name = os.path.join(dir_path ,'relationmatrix.json')

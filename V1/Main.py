@@ -19,7 +19,11 @@ def run_program():
         return jsonify({"message": "Program started successfully with URL: {}".format(curentURL), "status": "running"})
     
     except Exception as e:
+        logging.error(f"An error occurred while starting the program: {e}")
         return jsonify({"error": "Failed to run the program", "details": str(e)}), 500
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+
