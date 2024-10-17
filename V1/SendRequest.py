@@ -13,10 +13,12 @@ print(response.json())
 
 
 
-#to check saved files
+#to check saved filess
 flask_app_url = "http://13.38.16.203:5000/list-files/relationmatrix.json"  # Change to your server's IP and filename
 response = requests.get(flask_app_url)
 try:
     print(response.json())
 except ValueError:
     print("Error: Could not decode JSON response.")
+
+    #running each one is correct!
