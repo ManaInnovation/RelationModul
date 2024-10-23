@@ -60,11 +60,8 @@ class V2RelationBehave():
      
           return CurentRelation
     
-    def Save(self, CurentRelation , path='D:/EachEntityRelation2'):
-          # if not os.path.exists(path):
-          #      os.makedirs(path)
-          dir_path = os.path.dirname(os.path.realpath(__file__))
-          file_name = os.path.join(dir_path, CurentRelation.uid + '.json')
+    def Save(self, CurentRelation):
+          # Serialize the CurentRelation object to JSON format
           json_data = json.dumps(CurentRelation, default=self.default_serializer, indent=4)
 
           # Encode the JSON string in base64
@@ -73,16 +70,16 @@ class V2RelationBehave():
           # Prepare the JSON payload for the POST request
           payload = {
                "cmd": "StoreFile",
-               "folder": "objrelation",
-               "base64": base64_encoded,
-               "control": "True",
+               "folder": "objrelation",  # Specify the folder to save the file in
+               "base64": base64_encoded,  # The base64-encoded JSON data
+               "control": "True",  # Additional control parameter
                "filename": f"{CurentRelation.uid}.json",  # Use the uid as the filename
-               "filetype": "json",
-               "action": "write"  # Corrected to "write" for saving the file
+               "filetype": "json",  # Specify the file type
+               "action": "write"  # Specify the action to write the file
           }
 
           # Construct the full URL for the API endpoint
-          api_url = f"{com.CommonConfig.base_url}/CMD"
+          api_url = f"{com.CommonConfig.base_url}/CMD"  # Ensure this is correctly set to your server's base URL
 
           try:
                # Send the POST request to the API
@@ -549,35 +546,38 @@ class V2RelationMatrix():
                print(f"An error occurred while saving the matrix: {e}")
           
           #return CurentRelation
-     def SaveMatrix(self, Array3d ,url, path='D:/EachEntityRelation3'):
-          #uid = com.Common_UID.new(Surce + Desi)
-          dir_path = os.path.dirname(os.path.realpath(__file__))
-          # if not os.path.exists(path):
-          #      os.makedirs(path)
-          file_name = os.path.join(dir_path ,'relationmatrix.json')
+     def SaveMatrix(self, Array3d, url):
+    # Get current directory path
+          #dir_path = os.path.dirname(os.path.realpath(__file__))
+          #file_name = 'relationmatrix.json'  # Correct filename without full path
+          
+          # Convert Array3d to JSON and base64 encode it
           json_data = json.dumps(Array3d)
           base64_encoded = base64.b64encode(json_data.encode()).decode()
+          
+          # Payload to send to the server
           payload = {
         "cmd": "StoreFile",
-        "folder": "objrelation",
+        "folder": "objrelation",  # Folder where you want to store the file on the server
         "base64": base64_encoded,
         "control": "True",
-        "filename": file_name,
+        "filename": "relationmatrix.json",  # Filename on the server
         "filetype": "json",
         "action": "write"
           }
-          api_url = f"{url}/CMD"
-          try:
-               # Send the POST request to the API
-               response = requests.post(api_url, json=payload)
 
-               # Check the response status code
+    # Send the POST request to the external server
+          api_url = f"{url}/CMD"  # For example, "http://asset23d.ir/api/CMD"
+          
+          try:
+               response = requests.post(api_url, json=payload)
                if response.status_code == 200:
-                    print("Matrix data successfully saved to the server.")
+                    print("Matrix data successfully saved to the external server.")
                else:
                     print(f"Failed to save matrix data. Server responded with status code {response.status_code}: {response.text}")
           except requests.RequestException as e:
                print(f"An error occurred while sending the request to the server: {e}")
+
 
      
 def run_tasks():
