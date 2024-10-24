@@ -557,14 +557,14 @@ class V2RelationMatrix():
           
           # Payload to send to the server
           payload = {
-        "cmd": "StoreFile",
-        "folder": "objrelation",  # Folder where you want to store the file on the server
-        "base64": base64_encoded,
-        "control": "True",
-        "filename": "relationmatrix.json",  # Filename on the server
-        "filetype": "json",
-        "action": "write"
-          }
+          "cmd": "StoreFile",
+          "folder": "objrelation",  # Folder where you want to store the file on the server
+          "base64": base64_encoded,
+          "control": "True",
+          "filename": "relationmatrix.json",  # Filename on the server
+          "filetype": "json",
+          "action": "write"
+               }
 
     # Send the POST request to the external server
           api_url = f"{url}/CMD"  # For example, "http://asset23d.ir/api/CMD"
